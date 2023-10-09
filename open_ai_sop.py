@@ -1,5 +1,5 @@
 import openai
-openai.api_key = "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"
+openai.api_key = ""
 instructions="""Imagine you are a student applying for a graduate program at a prestigious university. You need to craft a compelling Statement of Purpose (SOP) to showcase your qualifications and motivations. Your goal is to demonstrate your fit for the program and your potential as a future academic or professional in the field.
 
 Use the information provided by the user to write the Statement of Purpose. 
