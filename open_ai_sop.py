@@ -361,7 +361,7 @@ earn money, but live life on their own terms!
           """
 def generate_sop(engine, word_limit, program, university, field_interest, career_goal, subjects_studied, projects_internships, lacking_skills, program_benefits, contribution):
     if engine == "gpt-3.5":
-        model_name = "gpt-3.5-turbo"
+        model_name = "gpt-3.5-turbo-16k"
     elif engine == "gpt-4":
         model_name = "gpt-4"
     else:
