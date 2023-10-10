@@ -220,6 +220,8 @@ if st.session_state.get("user_logged_in") == True:
             )
             if regenerate:
                 generate_sop(word_limit)
+                st.session_state.generated_sop=generated_sop
+                display_sop(generated_sop)
                 st.experimental_rerun()
         # NEW STUFF
         elif state.section_index == len(text_areas) - 2:
