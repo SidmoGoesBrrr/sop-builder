@@ -12,3 +12,8 @@ def display_drafts_page():
             st.write("-----------------------------------------------------------------------------------------------")
     while not st.button("Back"):
         time.sleep(3)
+
+if st.session_state.get("user_logged_in") == True:
+    display_drafts_page()
+else:
+    st.error("⚠️ You need to login to access this feature! Please log in. ⚠️")
