@@ -1,10 +1,10 @@
 from pymongo import MongoClient
 from datetime import datetime
 from bson.objectid import ObjectId
-
+import streamlit as st
 # Connect to MongoDB
 client = MongoClient(
-    "mongodb+srv://sid:jJbRext3ZbnVSo2o@universities.kttbtfp.mongodb.net/"
+    st.secrets["db_url"]
 )
 db = client["SOP_Builder"]
 users_collection = db["users"]
