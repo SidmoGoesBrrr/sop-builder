@@ -174,9 +174,17 @@ if st.session_state.get("user_logged_in") == True:
     with col2:
         if state.section_index == len(text_areas) - 1:
             if st.button("Save Draft Online"):
-                updated_draft = database.get_user_data_by_id(st.session_state.user_id)['draft']
-                updated_draft.append(st.session_state.generated_sop)
-                database.update_user_by_id(st.session_state.user_id, {'draft': st.session_state.generated_sop})
+                user_data = database.get_user_data_by_id(st.session_state.user_id)
+                if 'draft' in user_data and isinstance(user_data['draft'], list):
+                    # If 'draft' is a list, fetch and append to it
+                    existing_draft = user_data['draft']
+                    existing_draft.append(st.session_state.generated_sop)
+                else:
+                    # If 'draft' doesn't exist or is not a list, create a new list
+                    existing_draft = [st.session_state.generated_sop]
+
+                # Update the user's draft in the database
+                database.update_user_by_id(st.session_state.user_id, {'draft': existing_draft})
                 saved_online()
                 time.sleep(3)
                 st.experimental_rerun()
@@ -190,7 +198,26 @@ if st.session_state.get("user_logged_in") == True:
     with col4:
         if state.section_index == len(text_areas) - 1:
             regenerate = st.button("Change Word Limit and Regenerate")
+            user_data = database.get_user_data_by_id(st.session_state.user_id)
             word_limit = st.number_input("Word Limit:", min_value=700, max_value=1100, value=800, step=10)
+            fetched_data = {
+                        "program": user_data.get("program", ""),
+                        "university": user_data.get("university", ""),
+                        "field_interest": user_data.get("field_interest", ""),
+                        "career_goal": user_data.get("career_goal", ""),
+                        "subjects_studied": user_data.get("subjects_studied", []),
+                        "projects_internships": user_data.get("projects_internships", []),
+                        "lacking_skills": user_data.get("lacking_skills", []),
+                        "program_benefits": user_data.get("program_benefits", []),
+                        "contribution": user_data.get("contribution", [])
+                    }
+
+            # Call the generate_sop function with the required arguments
+            generated_sop = generate_sop(
+                engine='gpt-4',
+                word_limit=word_limit,  # Adjust word limit accordingly
+                **fetched_data  # Unpack the fetched_data dictionary to pass as arguments
+            )
             if regenerate:
                 generate_sop(word_limit)
                 st.experimental_rerun()
