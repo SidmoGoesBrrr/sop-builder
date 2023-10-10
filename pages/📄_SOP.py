@@ -1,7 +1,10 @@
 import streamlit as st
+
 from open_ai_sop import generate_sop
 # Check if the user is logged in
-if st.session_state.get("user_logged_in")==True:
+
+
+if st.session_state.get("user_logged_in") == True:
     from streamlit import session_state as state
     # TODO pip install reportlab
     from reportlab.lib.pagesizes import letter
@@ -10,25 +13,31 @@ if st.session_state.get("user_logged_in")==True:
     from io import BytesIO
     import time
     import database
-    
+
+    import re
+
 
     
+
+
     # Function to save the entered text to the database
     def save_to_database(key, value):
         database.update_user_by_id(st.session_state.user_id, {key: value})
 
+
     def display_sop(text):
         # Retrieve the content from text_areas and limit it to the specified word limit
-        word_count = count_words(text)
-        sop_display_area.text(text+f"\n\n\nWord Count: {word_count}")
+        banner.text(text)
+
 
     # Function to display success banner
     def show_success_banner():
         banner.success("Text saved successfully!")
 
+
     def saved_online():
-        
         banner.info("Your draft has been saved")
+
 
     def check_if_program_length_okay(text):
         word_count = len(text.split())
@@ -36,7 +45,8 @@ if st.session_state.get("user_logged_in")==True:
 
 
     def error_msg(question):
-        if current_section['question'] == "Which university is this SOP for?" or current_section['question'] == "Which program is this SOP for?":
+        if current_section['question'] == "Which university is this SOP for?" or current_section[
+            'question'] == "Which program is this SOP for?":
             banner.error("Please do not leave this field blank")
         else:
             banner.error("Please enter 50 words or more")
@@ -116,11 +126,11 @@ if st.session_state.get("user_logged_in")==True:
     # Streamlit app
     st.markdown("<h1 style='text-align: center; color: #80ed99;'>Welcome to the Statement of Purpose Generator</h1>",
                 unsafe_allow_html=True)
-    st.markdown("<h2 style='text-align: center; color: #c8b6ff;'>Let's begin by understanding your goals and achievements to generate a personalized and impactful statement of purpose</h2>", unsafe_allow_html=True)
+    st.markdown("<h1 style='text-align: center; color: #c8b6ff;'>Start wrotomg</h1>", unsafe_allow_html=True)
     st.markdown(
         "<h6 style='text-align: center; color: #fcf6bd;'>Answer in a minimum of 50 words and a maximum of 200 words.</h6>",
         unsafe_allow_html=True)
-    
+
     # Initialize session state
     if "section_index" not in state:
         state.section_index = 0
@@ -134,28 +144,27 @@ if st.session_state.get("user_logged_in")==True:
     try:
         previous_text = database.get_user_data_by_id(st.session_state.user_id)[current_section_key]
         st.write(f"### {current_section['question']}")
-        text = st.text_area(" ", key=current_section_key, value=previous_text, placeholder=current_section["placeholder"],
+        text = st.text_area(" ", key=current_section_key, value=previous_text,
+                            placeholder=current_section["placeholder"],
                             height=300)
         word_count = count_words(text)
         st.text(f"Word Count: {word_count}")
         st.session_state.word_count = word_count
     except:
         previous_text = ""
-        
 
     # Navigation buttons
     sop_display_area=st.empty()
     col1, col2, col3, col4, col5 = st.columns(5)
     banner = st.empty()
-
     if state.section_index == len(text_areas) - 1:
         sop_display_area.write(str(st.session_state.generated_sop))
-    #todo make this showable with the buttons
+
     with col1:
         if state.section_index == 0:
             st.button("Previous⬅️", disabled=True)
         elif state.section_index == len(text_areas) - 1:
-            if st.download_button("Download the Draft ", st.session_state.generated_sop,  "sop.txt", "text/plain"):
+            if st.download_button("Download the Draft ", st.session_state.generated_sop, "sop.txt", "text/plain"):
                 st.experimental_rerun()
         else:
             if st.button("Previous⬅️"):
@@ -165,6 +174,9 @@ if st.session_state.get("user_logged_in")==True:
     with col2:
         if state.section_index == len(text_areas) - 1:
             if st.button("Save Draft Online"):
+                updated_draft = database.get_user_data_by_id(st.session_state.user_id)['draft']
+                updated_draft.append(st.session_state.generated_sop)
+                database.update_user_by_id(st.session_state.user_id, {'draft': st.session_state.generated_sop})
                 saved_online()
                 time.sleep(3)
                 st.experimental_rerun()
@@ -177,11 +189,14 @@ if st.session_state.get("user_logged_in")==True:
 
     with col4:
         if state.section_index == len(text_areas) - 1:
-            regenerate= st.button("Change Word Limit and Regenerate")
+            regenerate = st.button("Change Word Limit and Regenerate")
             word_limit = st.number_input("Word Limit:", min_value=700, max_value=1100, value=800, step=10)
             if regenerate:
-                generate_and_display_updated_content(word_limit)
+                generate_sop(word_limit)
                 st.experimental_rerun()
+        # NEW STUFF
+        elif state.section_index == len(text_areas) - 2:
+            option = st.selectbox("Which model of chat GPT would you like to use?", ["GPT-3.5", "GPT-4"])
 
     with col5:
         if state.section_index == len(text_areas) - 1:
@@ -206,20 +221,18 @@ if st.session_state.get("user_logged_in")==True:
                         "contribution": user_data.get("contribution", [])
                     }
                     state.section_index = min(len(text_areas) - 1, state.section_index + 1)
-                    
+
                     # Call the generate_sop function with the required arguments
                     generated_sop = generate_sop(
-                        engine="gpt-4",
-                        word_limit=500,  # Adjust word limit accordingly
+                        engine=option.lower(),
+                        word_limit=800,  # Adjust word limit accordingly
                         **fetched_data  # Unpack the fetched_data dictionary to pass as arguments
                     )
                     st.session_state.generated_sop=generated_sop
                     display_sop(generated_sop)
                     print(generated_sop)
-                    
                     st.experimental_rerun()
-                    
-                    
+
         else:
             if st.button("Next➡️"):
                 length_pass = check_if_program_length_okay(text)

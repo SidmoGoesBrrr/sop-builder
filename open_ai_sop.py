@@ -1,5 +1,6 @@
 import openai
-openai.api_key = ""
+import streamlit as st
+openai.api_key = st.secrets["api_key"]
 instructions="""Imagine you are a student applying for a graduate program at a prestigious university. You need to craft a compelling Statement of Purpose (SOP) to showcase your qualifications and motivations. Your goal is to demonstrate your fit for the program and your potential as a future academic or professional in the field.
 
 Use the information provided by the user to write the Statement of Purpose. 
@@ -358,34 +359,44 @@ earn money, but live life on their own terms!
      
 
           """
-def generate_sop(engine,word_limit,program,university,field_interest,career_goal,subjects_studied,projects_internships,lacking_skills,program_benefits,contribution):
-  completion_4 = openai.ChatCompletion.create(
-    model="gpt-4",
-    messages=[
-      {"role": "system", "content": f"""
-      {instructions}Here are some sample SOPS you can train yourself on and mimic their style
-      \n {sample_sops}
-  """},
-      {"role": "user", "content": f"""Write an SOP with a word limit of minimum 900 and maximum 1100
-      Here is my information
-      Program: {program}
-      University:{university}
-      Introduction: {field_interest}
-      Career Goals: {career_goal}      
-      Education Background: {subjects_studied}   
-      Projects, internship, research work: {projects_internships}
-      Skills missing: {lacking_skills}       
-      Why this program and University: {program_benefits}       
-      How can I contribute: {contribution}      
-      Also add a conclusion of your own 
-      Rewrite all of this and write a good personal essay/SOP
-      Make sure the number of words is between 900-1100!
-      """}
-    ]
-  )
+def generate_sop(engine, word_limit, program, university, field_interest, career_goal, subjects_studied, projects_internships, lacking_skills, program_benefits, contribution):
+    if engine == "gpt-3.5":
+        model_name = "gpt-3.5-turbo"
+    elif engine == "gpt-4":
+        model_name = "gpt-4"
+    else:
+        raise ValueError("Invalid engine. Supported engines are 'gpt-3.5' and 'gpt-4'.")
 
+    while True:
+        completion = openai.ChatCompletion.create(
+            model=model_name,
+            messages=[
+                {"role": "system", "content": f"""
+                {instructions} Here are some sample SOPs you can train yourself on and mimic their style:
+                \n {sample_sops}
+                """},
+                {"role": "user", "content": f"""Write an SOP with a word limit of minimum {word_limit} and maximum 1100
+                Here is my information:
+                Program: {program}
+                University: {university}
+                Introduction: {field_interest}
+                Career Goals: {career_goal}      
+                Education Background: {subjects_studied}   
+                Projects, Internship, Research Work: {projects_internships}
+                Skills Missing: {lacking_skills}       
+                Why this program and University: {program_benefits}       
+                How Can I Contribute: {contribution}      
+                Also, add a conclusion of your own. 
+                Rewrite all of this and write a good personal essay/SOP.
+                Make sure the number of words is between {word_limit}-1200!
+                """}
+            ]
+        )
 
-  return completion_4.choices[0]['message']['content']
+        sop_content = completion.choices[0]['message']['content']
+        sop_words = sop_content.split()
 
-
-  
+        if len(sop_words) >= word_limit:
+            return sop_content
+        else:
+            print("SOP length is less than the specified word limit. Trying again...\n")
