@@ -25,7 +25,7 @@ if st.session_state.get("user_logged_in") == True:
             pdf_reader = PyPDF2.PdfReader(pdf_file)
             for page_num in range(len(pdf_reader.pages)):
                 page = pdf_reader.pages[page_num]
-                text += page.extractText()
+                text += page.extract_text()
         return text
 
     # Function to save the entered text to the database
