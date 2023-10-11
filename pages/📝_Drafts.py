@@ -8,7 +8,7 @@ def display_drafts_page():
     st.header("Drafts")
     print(st.session_state.user_id)
     try:
-        updated_draft = database.get_user_data_by_id(st.session_state.user_id)['draft']
+        updated_draft = database.get_user_data_by_id(st.session_state.user_id)['drafts']
         print(updated_draft)
     except:
         updated_draft = None

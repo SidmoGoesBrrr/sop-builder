@@ -204,7 +204,7 @@ if st.session_state.get("user_logged_in") == True:
             # Remove the temporary PDF file
             os.remove(temp_file_path)
         st.session_state.summary=summary
-        
+
     with col1:
         if state.section_index == 0:
             st.button("Previous⬅️", disabled=True)
@@ -220,16 +220,16 @@ if st.session_state.get("user_logged_in") == True:
         if state.section_index == len(text_areas) - 1:
             if st.button("Save Draft Online"):
                 user_data = database.get_user_data_by_id(st.session_state.user_id)
-                if 'draft' in user_data and isinstance(user_data['draft'], list):
+                if 'drafts' in user_data and isinstance(user_data['drafts'], list):
                     # If 'draft' is a list, fetch and append to it
-                    existing_draft = user_data['draft']
+                    existing_draft = user_data['drafts']
                     existing_draft.append(st.session_state.generated_sop)
                 else:
                     # If 'draft' doesn't exist or is not a list, create a new list
                     existing_draft = [st.session_state.generated_sop]
 
                 # Update the user's draft in the database
-                database.update_user_by_id(st.session_state.user_id, {'draft': existing_draft})
+                database.update_user_by_id(st.session_state.user_id, {'drafts': existing_draft})
                 saved_online()
                 time.sleep(3)
                 st.experimental_rerun()
