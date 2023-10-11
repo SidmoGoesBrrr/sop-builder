@@ -13,6 +13,7 @@ from reportlab.lib.styles import getSampleStyleSheet
 from io import BytesIO
 import time
 import database
+import pytz
 #####################################################################################################################################################
 from streamlit.components.v1 import html
 
@@ -98,9 +99,11 @@ if st.session_state['button'] == True:
                     st.session_state.user_logged_in = True
                     st.session_state.user_id=str(get_user_data(username)['_id'])
                     print(st.session_state.user_id)
+                    ist = pytz.timezone('Asia/Kolkata')
                     time.sleep(2)
+                    
                     update_user(username=username,
-                                data={"last_logged_in": datetime.now().strftime("%A,%d %B %Y - %H:%M:%S")})
+                                data={"last_logged_in": datetime.now(ist).strftime("%A,%d %B %Y - %H:%M:%S")})
                     nav_page("sop")
                     
 
