@@ -71,7 +71,6 @@ if st.session_state.get("user_logged_in") == True:
 
         return pdf_filename
 
-
     # TODO DELETE THIS FUNCTION IF YOU DONT LIKE WORD COUNT
     def count_words(text):
         if text:
@@ -137,6 +136,9 @@ if st.session_state.get("user_logged_in") == True:
 
     if 'word_count' not in st.session_state:
         st.session_state.word_count = 0
+
+    if "generated_sop" not in st.session_state:
+        st.session_state.generated_sop = ""
 
     # Display the current section
     current_section_key = list(text_areas.keys())[state.section_index]
