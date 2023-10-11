@@ -2,6 +2,7 @@ from pymongo import MongoClient
 from datetime import datetime
 from bson.objectid import ObjectId
 import streamlit as st
+import pytz
 # Connect to MongoDB
 client = MongoClient(
     st.secrets["db_url"]
@@ -44,7 +45,8 @@ def create_user(username, email, phone_number):
     user_data["username"] = username
     user_data["email"] = email
     user_data["phone_number"] = phone_number
-    user_data["last_logged_in"] = datetime.now().strftime("%A,%d %B %Y - %H:%M:%S")
+    ist = pytz.timezone('Asia/Kolkata')
+    user_data["last_logged_in"] = datetime.now(ist).strftime("%A,%d %B %Y - %H:%M:%S")
     result = users_collection.insert_one(user_data)
     return result.inserted_id
 
