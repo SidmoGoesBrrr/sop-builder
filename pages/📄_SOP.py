@@ -22,7 +22,7 @@ if st.session_state.get("user_logged_in") == True:
     def extract_text_from_pdf(pdf_path):
         text = ""
         with open(pdf_path, "rb") as pdf_file:
-            pdf_reader = PyPDF2.PdfFileReader(pdf_file)
+            pdf_reader = PyPDF2.PdfReader(pdf_file)
             for page_num in range(pdf_reader.numPages):
                 page = pdf_reader.getPage(page_num)
                 text += page.extractText()
