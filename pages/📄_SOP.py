@@ -89,7 +89,7 @@ if st.session_state.get("user_logged_in") == True:
         else:
             return 0
 
-
+        
     text_areas = {
         "program": {
             "question": "Which program is this SOP for?",
@@ -112,7 +112,7 @@ if st.session_state.get("user_logged_in") == True:
             "placeholder": "e.g., In college, I studied several subjects that formed the foundation of my knowledge of Computer Science. The course on Object Oriented Programming taught me best practices in programming while subjects like Data Structures taught me how data should be stored for efficient retrieval. Further, studying algorithms taught me how to break a problem down and then combine basic programming constructs in a cohesive manner to solve them. Studying theory was certainly important, but the only way for me to test my skills was to work on projects to put theory to practice."
         },
         "projects_internships": {
-            "question": "What projects, internships, research work have you done so far to achieve your career goals and how have these helped you get closer to achieving your career goals? Quantify the outcomes / achievements from these projects if any. OR Resume.",
+            "question": "What projects, internships, research work have you done so far to achieve your career goals and how have these helped you get closer to achieving your career goals? Quantify the outcomes / achievements from these projects if any. You can also upload your resume.",
             "placeholder": "e.g., I worked on several projects that allowed me to sharpen my skills in machine learning and computer vision. Two projects worth mentioning are my work on creating a tumor identification software and a robot that could identify structural faults in building. The former of these two was a research project commissioned by a local hospital. They had a large inflow of patients who would regularly do CT scans and MRIs – but didn’t have enough doctors to look at the scans in a timely manner. To solve this problem, I studied existing research done on building such models. I found two models that could be tweaked for this purpose. However, these were general object detection models and so I had to train them on five years’ worth of patient scans. I also had the to optimize the algorithm itself for this use case. Today, this software is used by the hospital – and in the last year it has detected the nature and stage of over 2,500 tumors with a 97% accuracy saving crucial time and cost for both the hospital and patients. Seeing the results, my head of department recommended me to the department of building safety in the Mumbai Municipal Corporation (MMC). At the time, the MMC faced a peculiar issue – there were several buildings in Mumbai that looked structurally healthy from the outside but were on the brink of collapse. Civil engineers were wary of entering such buildings for inspection owing to the risk. To solve this, I created a robot fitted with a camera on top. Using the camera, the bot would autonomously navigate the interior of the building clicking pictures and would calculate the risk of structural failure by spotting cracks, bulging walls and sagging floors. "
         },
         "lacking_skills": {
@@ -135,7 +135,7 @@ if st.session_state.get("user_logged_in") == True:
     # Streamlit app
     st.markdown("<h1 style='text-align: center; color: #80ed99;'>Welcome to the Statement of Purpose Generator</h1>",
                 unsafe_allow_html=True)
-    st.markdown("<h1 style='text-align: center; color: #c8b6ff;'>Start wrotomg</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 style='text-align: center; color: #c8b6ff;'>Start writing</h1>", unsafe_allow_html=True)
     st.markdown(
         "<h6 style='text-align: center; color: #fcf6bd;'>Answer in a minimum of 50 words and a maximum of 200 words.</h6>",
         unsafe_allow_html=True)
@@ -171,7 +171,40 @@ if st.session_state.get("user_logged_in") == True:
     banner = st.empty()
     if state.section_index == len(text_areas) - 1:
         sop_display_area.write(str(st.session_state.generated_sop))
+    
+    if state.section_index == len(text_areas) - 5:
+        uploaded_file = st.file_uploader("Upload your resume here", type=["pdf"])
+        summary=None
+        if uploaded_file is not None:
+            status_placeholder = st.empty()
 
+            status_placeholder.info("Resume Uploaded!")
+            time.sleep(0.5)
+            status_placeholder.info("Extracting text from the resume...")
+
+            # Save the uploaded file temporarily with a unique filename
+            temp_file_path = f"temp_resume_{str(st.session_state.user_id)}.pdf"
+            with open(temp_file_path, "wb") as temp_file:
+                temp_file.write(uploaded_file.getvalue())
+
+            # Extract text from the uploaded PDF
+            resume_text = extract_text_from_pdf(temp_file_path)
+
+            status_placeholder.info("Extracted text from the resume.")
+
+            # Summarize the resume using GPT-3.5 Turbo
+            status_placeholder.info("Summarizing the resume...")
+            summary = resume_summarize_with_gpt3(resume_text)
+
+            status_placeholder.info("Summary generated.")
+
+            # Display the summarized text
+            
+
+            # Remove the temporary PDF file
+            os.remove(temp_file_path)
+        st.session_state.summary=summary
+        
     with col1:
         if state.section_index == 0:
             st.button("Previous⬅️", disabled=True)
@@ -206,6 +239,7 @@ if st.session_state.get("user_logged_in") == True:
             pdf_filename = generate_pdf(st.session_state.generated_sop)
             if st.download_button("Save Draft As PDF", open(pdf_filename, 'rb'), "sop.pdf"):
                 st.experimental_rerun()
+                
 
     with col4:
         if state.section_index == len(text_areas) - 1:
@@ -246,36 +280,6 @@ if st.session_state.get("user_logged_in") == True:
                 st.experimental_rerun()
 
         elif state.section_index == len(text_areas) - 2:
-            uploaded_file = st.file_uploader("Upload a PDF file", type=["pdf"])
-            summary=None
-            if uploaded_file is not None:
-                status_placeholder = st.empty()
-
-                status_placeholder.info("Resume Uploaded!")
-                time.sleep(0.5)
-                status_placeholder.info("Extracting text from the resume...")
-
-                # Save the uploaded file temporarily with a unique filename
-                temp_file_path = f"temp_resume_{str(st.session_state.user_id)}.pdf"
-                with open(temp_file_path, "wb") as temp_file:
-                    temp_file.write(uploaded_file.getvalue())
-
-                # Extract text from the uploaded PDF
-                resume_text = extract_text_from_pdf(temp_file_path)
-
-                status_placeholder.info("Extracted text from the resume.")
-
-                # Summarize the resume using GPT-3.5 Turbo
-                status_placeholder.info("Summarizing the resume...")
-                summary = resume_summarize_with_gpt3(resume_text)
-
-                status_placeholder.info("Summary generated.")
-
-                # Display the summarized text
-                
-
-                # Remove the temporary PDF file
-                os.remove(temp_file_path)
 
             if st.button("Generate SOP✅"):
                 save_to_database(current_section_key, text)
@@ -298,7 +302,7 @@ if st.session_state.get("user_logged_in") == True:
                     generated_sop = generate_sop(
                         engine=option.lower(),
                         word_limit=800,
-                        resume_text=summary,   # Adjust word limit accordingly
+                        resume_text=st.session_state.summary,   # Adjust word limit accordingly
                         **fetched_data
                             # Unpack the fetched_data dictionary to pass as arguments
                     )
