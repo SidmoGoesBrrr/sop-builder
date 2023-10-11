@@ -25,6 +25,7 @@ user_schema = {
     "program_benefits": "",
     "contribution": "",
     "conclusion": "",
+    "drafts": []
 }
 
 # Login Schema
@@ -36,6 +37,7 @@ login_schema = {
 }
 
 # Functions for CRUD operations for users
+
 
 def create_user(username, email, phone_number):
     user_data = user_schema.copy()
@@ -50,12 +52,15 @@ def create_user(username, email, phone_number):
 def get_user_data(username):
     return users_collection.find_one({"username": username})
 
+
 def get_user_data_by_id(id):
     objInstance = ObjectId(id)
     return users_collection.find_one({"_id": objInstance})
 
+
 def update_user(username, data):
     users_collection.update_one({"username": username}, {"$set": data})
+
 
 def update_user_by_id(id,data):
     objInstance = ObjectId(id)
