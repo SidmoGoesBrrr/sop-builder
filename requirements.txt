@@ -6,3 +6,4 @@ streamlit
 openai
 pymongo
 reportlab
+PyPDF2

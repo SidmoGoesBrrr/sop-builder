@@ -1,6 +1,6 @@
 import streamlit as st
 
-from open_ai_sop import generate_sop
+from open_ai_sop import generate_sop,resume_summarize_with_gpt3
 # Check if the user is logged in
 
 
@@ -13,12 +13,20 @@ if st.session_state.get("user_logged_in") == True:
     from io import BytesIO
     import time
     import database
-
+    import PyPDF2
     import re
+    import os
 
+    # Function to extract text from a PDF file
 
-    
-
+    def extract_text_from_pdf(pdf_path):
+        text = ""
+        with open(pdf_path, "rb") as pdf_file:
+            pdf_reader = PyPDF2.PdfFileReader(pdf_file)
+            for page_num in range(pdf_reader.numPages):
+                page = pdf_reader.getPage(page_num)
+                text += page.extractText()
+        return text
 
     # Function to save the entered text to the database
     def save_to_database(key, value):
@@ -27,6 +35,8 @@ if st.session_state.get("user_logged_in") == True:
 
     def display_sop(text):
         # Retrieve the content from text_areas and limit it to the specified word limit
+        word_count = len(text.split())
+        text=text+f"\nWord Count:{word_count}"
         banner.text(text)
 
 
@@ -236,6 +246,37 @@ if st.session_state.get("user_logged_in") == True:
                 st.experimental_rerun()
 
         elif state.section_index == len(text_areas) - 2:
+            uploaded_file = st.file_uploader("Upload a PDF file", type=["pdf"])
+            summary=None
+            if uploaded_file is not None:
+                status_placeholder = st.empty()
+
+                status_placeholder.info("Resume Uploaded!")
+                time.sleep(0.5)
+                status_placeholder.info("Extracting text from the resume...")
+
+                # Save the uploaded file temporarily with a unique filename
+                temp_file_path = f"temp_resume_{str(st.session_state.user_id)}.pdf"
+                with open(temp_file_path, "wb") as temp_file:
+                    temp_file.write(uploaded_file.getvalue())
+
+                # Extract text from the uploaded PDF
+                resume_text = extract_text_from_pdf(temp_file_path)
+
+                status_placeholder.info("Extracted text from the resume.")
+
+                # Summarize the resume using GPT-3.5 Turbo
+                status_placeholder.info("Summarizing the resume...")
+                summary = resume_summarize_with_gpt3(resume_text)
+
+                status_placeholder.info("Summary generated.")
+
+                # Display the summarized text
+                
+
+                # Remove the temporary PDF file
+                os.remove(temp_file_path)
+
             if st.button("Generate SOP✅"):
                 save_to_database(current_section_key, text)
                 with st.spinner("Generating SOP"):
@@ -256,8 +297,10 @@ if st.session_state.get("user_logged_in") == True:
                     # Call the generate_sop function with the required arguments
                     generated_sop = generate_sop(
                         engine=option.lower(),
-                        word_limit=800,  # Adjust word limit accordingly
-                        **fetched_data  # Unpack the fetched_data dictionary to pass as arguments
+                        word_limit=800,
+                        resume_text=summary,   # Adjust word limit accordingly
+                        **fetched_data
+                            # Unpack the fetched_data dictionary to pass as arguments
                     )
                     st.session_state.generated_sop=generated_sop
                     display_sop(generated_sop)

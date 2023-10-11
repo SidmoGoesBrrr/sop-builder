@@ -359,14 +359,18 @@ earn money, but live life on their own terms!
      
 
           """
-def generate_sop(engine, word_limit, program, university, field_interest, career_goal, subjects_studied, projects_internships, lacking_skills, program_benefits, contribution):
+def generate_sop(engine, word_limit, program, university, field_interest, career_goal, subjects_studied, projects_internships, lacking_skills, program_benefits, contribution,resume_text=None):
     if engine == "gpt-3.5":
         model_name = "gpt-3.5-turbo-16k"
     elif engine == "gpt-4":
         model_name = "gpt-4"
     else:
         raise ValueError("Invalid engine. Supported engines are 'gpt-3.5' and 'gpt-4'.")
-
+    if resume_text is None:
+        resume=""
+    else:
+        resume=f"Also consider the following skills and work experiance while writing the resume, if you think it fits. {resume_text}"
+        
     while True:
         completion = openai.ChatCompletion.create(
             model=model_name,
@@ -386,7 +390,8 @@ def generate_sop(engine, word_limit, program, university, field_interest, career
                 Skills Missing: {lacking_skills}       
                 Why this program and University: {program_benefits}       
                 How Can I Contribute: {contribution}      
-                Also, add a conclusion of your own. 
+                Also, add a conclusion of your own.
+                {resume} 
                 Rewrite all of this and write a good personal essay/SOP.
                 Make sure the number of words is between {word_limit}-1200!
                 """}
@@ -400,3 +405,22 @@ def generate_sop(engine, word_limit, program, university, field_interest, career
             return sop_content
         else:
             print("SOP length is less than the specified word limit. Trying again...\n")
+
+def resume_summarize_with_gpt3(resume_text):
+    # Specify the prompt for GPT-3.5 Turbo
+    completion = openai.ChatCompletion.create(
+            model="gpt-4",
+            temperature=0.3,
+            max_tokens=300,
+            messages=[
+                {"role": "system", "content": f"""You are an excellant writer. You read resumes and provide a 150 word summary of their skills and experiances, based on the text from the resume 
+                \n {sample_sops}
+                """},
+                {"role": "user", "content": f"""Summarize this resume in 150 words {resume_text}
+                """}
+            ]
+    )
+        
+
+    resume = completion.choices[0]['message']['content']
+    return resume

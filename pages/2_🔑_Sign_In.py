@@ -90,7 +90,8 @@ if st.session_state['button'] == True:
     else:
         if username in [user['username'] for user in users_collection.find()] and phone_number in [user['phone_number'] for user in users_collection.find()]:
             otp = st.text_input("OTP")
-            send_otp(phone_number,"1234")
+            generated_otp=str(random.randint(1000, 9999))
+            send_otp(phone_number,generated_otp)
             if st.button('Login'):
                 if otp == "1234":
                     st.success("Logged in Successfully.")
