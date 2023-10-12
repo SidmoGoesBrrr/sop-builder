@@ -1,6 +1,6 @@
 import streamlit as st
 
-from open_ai_sop import generate_sop,resume_summarize_with_gpt3
+from open_ai_sop import generate_sop,resume_summarize_with_gpt4
 # Check if the user is logged in
 
 
@@ -186,7 +186,7 @@ if st.session_state.get("user_logged_in") == True:
             temp_file_path = f"temp_resume_{str(st.session_state.user_id)}.pdf"
             with open(temp_file_path, "wb") as temp_file:
                 temp_file.write(uploaded_file.getvalue())
-
+            option = st.selectbox("Which model of chat GPT would you like to use?", ["GPT-3.5", "GPT-4"])
             # Extract text from the uploaded PDF
             resume_text = extract_text_from_pdf(temp_file_path)
 
@@ -194,8 +194,7 @@ if st.session_state.get("user_logged_in") == True:
 
             # Summarize the resume using GPT-3.5 Turbo
             status_placeholder.info("Summarizing the resume...")
-            summary = resume_summarize_with_gpt3(resume_text)
-
+            summary = resume_summarize_with_gpt4(resume_text,option)
             status_placeholder.info("Summary generated.")
 
             # Display the summarized text

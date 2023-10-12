@@ -369,7 +369,7 @@ def generate_sop(engine, word_limit, program, university, field_interest, career
     if resume_text is None:
         resume=""
     else:
-        resume=f"Also consider the following skills and work experiance while writing the resume, if you think it fits. {resume_text}"
+        resume=f"Also consider the following skills and work experiance while writing the SOP, if you think it fits. {resume_text}"
         
     while True:
         completion = openai.ChatCompletion.create(
@@ -406,10 +406,16 @@ def generate_sop(engine, word_limit, program, university, field_interest, career
         else:
             print("SOP length is less than the specified word limit. Trying again...\n")
 
-def resume_summarize_with_gpt3(resume_text):
+def resume_summarize_with_gpt4(resume_text,engine):
     # Specify the prompt for GPT-3.5 Turbo
+    if engine == "gpt-3.5":
+        model_name = "gpt-3.5-turbo-16k"
+    elif engine == "gpt-4":
+        model_name = "gpt-4"
+    else:
+        raise ValueError("Invalid engine. Supported engines are 'gpt-3.5' and 'gpt-4'.")
     completion = openai.ChatCompletion.create(
-            model="gpt-4",
+            model=model_name,
             temperature=0.3,
             max_tokens=300,
             messages=[
@@ -423,4 +429,4 @@ def resume_summarize_with_gpt3(resume_text):
         
 
     resume = completion.choices[0]['message']['content']
-    return resume
+    return resume   
