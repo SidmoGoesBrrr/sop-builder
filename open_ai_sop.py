@@ -408,9 +408,9 @@ def generate_sop(engine, word_limit, program, university, field_interest, career
 
 def resume_summarize_with_gpt4(resume_text,engine):
     # Specify the prompt for GPT-3.5 Turbo
-    if engine == "gpt-3.5":
+    if engine.lower() == "gpt-3.5":
         model_name = "gpt-3.5-turbo-16k"
-    elif engine == "gpt-4":
+    elif engine.lower() == "gpt-4":
         model_name = "gpt-4"
     else:
         raise ValueError("Invalid engine. Supported engines are 'gpt-3.5' and 'gpt-4'.")
