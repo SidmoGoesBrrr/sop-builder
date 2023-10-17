@@ -209,11 +209,11 @@ if st.session_state.get("user_logged_in") == True:
             st.button("Previous⬅️", disabled=True)
         elif state.section_index == len(text_areas) - 1:
             if st.download_button("Download the Draft ", st.session_state.generated_sop, "sop.txt", "text/plain"):
-                st.experimental_rerun()
+                st.rerun()
         else:
             if st.button("Previous⬅️"):
                 state.section_index = max(0, state.section_index - 1)
-                st.experimental_rerun()
+                st.rerun()
 
     with col2:
         if state.section_index == len(text_areas) - 1:
@@ -231,13 +231,13 @@ if st.session_state.get("user_logged_in") == True:
                 database.update_user_by_id(st.session_state.user_id, {'drafts': existing_draft})
                 saved_online()
                 time.sleep(3)
-                st.experimental_rerun()
+                st.rerun()
 
     with col3:
         if state.section_index == len(text_areas) - 1:
             pdf_filename = generate_pdf(st.session_state.generated_sop)
             if st.download_button("Save Draft As PDF", open(pdf_filename, 'rb'), "sop.pdf"):
-                st.experimental_rerun()
+                st.rerun()
                 
 
     with col4:
@@ -267,7 +267,7 @@ if st.session_state.get("user_logged_in") == True:
                 generate_sop(word_limit)
                 st.session_state.generated_sop=generated_sop
                 display_sop(generated_sop)
-                st.experimental_rerun()
+                st.rerun()
         # NEW STUFF
         elif state.section_index == len(text_areas) - 2:
             option = st.selectbox("Which model of chat GPT would you like to use?", ["GPT-3.5", "GPT-4"])
@@ -276,7 +276,7 @@ if st.session_state.get("user_logged_in") == True:
         if state.section_index == len(text_areas) - 1:
             if st.button("Start Over"):
                 state.section_index = 0
-                st.experimental_rerun()
+                st.rerun()
 
         elif state.section_index == len(text_areas) - 2:
 
@@ -308,7 +308,7 @@ if st.session_state.get("user_logged_in") == True:
                     st.session_state.generated_sop=generated_sop
                     display_sop(generated_sop)
                     print(generated_sop)
-                    st.experimental_rerun()
+                    st.rerun()
 
         else:
             if st.button("Next➡️"):
@@ -320,7 +320,7 @@ if st.session_state.get("user_logged_in") == True:
                     save_to_database(current_section_key, text)
                     show_success_banner()
                     time.sleep(1)
-                    st.experimental_rerun()
+                    st.rerun()
                 else:
                     error_msg(current_section['question'])
 
