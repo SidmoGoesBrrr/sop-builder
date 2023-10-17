@@ -173,36 +173,37 @@ if st.session_state.get("user_logged_in") == True:
         sop_display_area.write(str(st.session_state.generated_sop))
     
     if state.section_index == len(text_areas) - 5:
-        uploaded_file = st.file_uploader("Upload your resume here", type=["pdf"])
-        summary=None
-        if uploaded_file is not None:
-            status_placeholder = st.empty()
-
-            status_placeholder.info("Resume Uploaded!")
-            time.sleep(0.5)
-            status_placeholder.info("Extracting text from the resume...")
-
-            # Save the uploaded file temporarily with a unique filename
-            temp_file_path = f"temp_resume_{str(st.session_state.user_id)}.pdf"
-            with open(temp_file_path, "wb") as temp_file:
-                temp_file.write(uploaded_file.getvalue())
-            option = st.selectbox("Which model of chat GPT would you like to use?", ["GPT-3.5", "GPT-4"])
-            # Extract text from the uploaded PDF
-            resume_text = extract_text_from_pdf(temp_file_path)
-
-            status_placeholder.info("Extracted text from the resume.")
-
-            # Summarize the resume using GPT-3.5 Turbo
-            status_placeholder.info("Summarizing the resume...")
-            summary = resume_summarize_with_gpt4(resume_text,option)
-            status_placeholder.info("Summary generated.")
-
-            # Display the summarized text
-            
-
-            # Remove the temporary PDF file
-            os.remove(temp_file_path)
-        st.session_state.summary=summary
+        if st.session_state.summary is None:
+            uploaded_file = st.file_uploader("Upload your resume here", type=["pdf"])
+            summary=None
+            if uploaded_file is not None:
+                status_placeholder = st.empty()
+    
+                status_placeholder.info("Resume Uploaded!")
+                time.sleep(0.5)
+                status_placeholder.info("Extracting text from the resume...")
+    
+                # Save the uploaded file temporarily with a unique filename
+                temp_file_path = f"temp_resume_{str(st.session_state.user_id)}.pdf"
+                with open(temp_file_path, "wb") as temp_file:
+                    temp_file.write(uploaded_file.getvalue())
+                option = st.selectbox("Which model of chat GPT would you like to use?", ["GPT-3.5", "GPT-4"])
+                # Extract text from the uploaded PDF
+                resume_text = extract_text_from_pdf(temp_file_path)
+    
+                status_placeholder.info("Extracted text from the resume.")
+    
+                # Summarize the resume using GPT-3.5 Turbo
+                status_placeholder.info("Summarizing the resume...")
+                summary = resume_summarize_with_gpt4(resume_text,option)
+                status_placeholder.info("Summary generated.")
+    
+                # Display the summarized text
+                
+    
+                # Remove the temporary PDF file
+                os.remove(temp_file_path)
+            st.session_state.summary=summary
 
     with col1:
         if state.section_index == 0:
