@@ -1,5 +1,6 @@
 import openai
 import streamlit as st
+import time
 openai.api_key = st.secrets["api_key"]
 instructions="""Imagine you are a student applying for a graduate program at a prestigious university. You need to craft a compelling Statement of Purpose (SOP) to showcase your qualifications and motivations. Your goal is to demonstrate your fit for the program and your potential as a future academic or professional in the field.
 
