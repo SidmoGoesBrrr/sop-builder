@@ -1,8 +1,9 @@
 import openai
 import streamlit as st
 import time
+
 openai.api_key = st.secrets["api_key"]
-instructions="""Imagine you are a student applying for a graduate program at a prestigious university. You need to craft a compelling Statement of Purpose (SOP) to showcase your qualifications and motivations. Your goal is to demonstrate your fit for the program and your potential as a future academic or professional in the field.
+instructions = """Imagine you are a student applying for a graduate program at a prestigious university. You need to craft a compelling Statement of Purpose (SOP) to showcase your qualifications and motivations. Your goal is to demonstrate your fit for the program and your potential as a future academic or professional in the field.
 
 Use the information provided by the user to write the Statement of Purpose. 
 
@@ -37,7 +38,7 @@ Remember to maintain a clear, concise, and genuine tone throughout the SOP. Focu
 The SOP should be free of grammatical and spelling errors and should be between 900 to 1100 words. Also, the SOP should flow properly. Each sentence should connect well with the next. And each paragraph should connect well with the next.
 """
 
-sample_sops="""Sample SOP 1: MS in Data Science
+sample_sops = """Sample SOP 1: MS in Data Science
      
     University of Pennsylvania
 
@@ -360,7 +361,22 @@ earn money, but live life on their own terms!
      
 
           """
-def generate_sop(engine, word_limit, program, university, field_interest, career_goal, subjects_studied, projects_internships, lacking_skills, program_benefits, contribution,resume_text=None):
+
+
+def generate_sop(
+    engine,
+    word_limit,
+    program,
+    university,
+    field_interest,
+    career_goal,
+    subjects_studied,
+    projects_internships,
+    lacking_skills,
+    program_benefits,
+    contribution,
+    resume_text=None,
+):
     if engine == "gpt-3.5":
         model_name = "gpt-3.5-turbo-16k"
     elif engine == "gpt-4":
@@ -368,17 +384,23 @@ def generate_sop(engine, word_limit, program, university, field_interest, career
     else:
         raise ValueError("Invalid engine. Supported engines are 'gpt-3.5' and 'gpt-4'.")
     if resume_text is None:
-        resume=""
+        resume = ""
     else:
-        resume=f"Also consider the following skills and work experiance while writing the SOP, if you think it fits. {resume_text}"
+        resume = f"Also consider the following skills and work experiance while writing the SOP, if you think it fits. {resume_text}"
+
     completion = openai.ChatCompletion.create(
-            model=model_name,
-            messages=[
-                {"role": "system", "content": f"""
+        model=model_name,
+        messages=[
+            {
+                "role": "system",
+                "content": f"""
                 {instructions} Here are some sample SOPs you can train yourself on and mimic their style:
                 \n {sample_sops}
-                """},
-                {"role": "user", "content": f"""Write an SOP with a word limit of minimum {word_limit} and maximum 1100
+                """,
+            },
+            {
+                "role": "user",
+                "content": f"""Write an SOP with a word limit of minimum {word_limit} and maximum 1100
                 Here is my information:
                 Program: {program}
                 University: {university}
@@ -393,15 +415,16 @@ def generate_sop(engine, word_limit, program, university, field_interest, career
                 {resume} 
                 Rewrite all of this and write a good personal essay/SOP.
                 Make sure the number of words is between {word_limit}-1200!
-                """}
-            ]
-        )
+                """,
+            },
+        ],
+    )
 
-    sop_content = completion.choices[0]['message']['content']
-        
-        
+    sop_content = completion.choices[0]["message"]["content"]
+    return sop_content
 
-def resume_summarize_with_gpt4(resume_text,engine):
+
+def resume_summarize_with_gpt4(resume_text, engine):
     # Specify the prompt for GPT-3.5 Turbo
     if engine.lower() == "gpt-3.5":
         model_name = "gpt-3.5-turbo-16k"
@@ -410,18 +433,23 @@ def resume_summarize_with_gpt4(resume_text,engine):
     else:
         raise ValueError("Invalid engine. Supported engines are 'gpt-3.5' and 'gpt-4'.")
     completion = openai.ChatCompletion.create(
-            model=model_name,
-            temperature=0.3,
-            max_tokens=300,
-            messages=[
-                {"role": "system", "content": f"""You are an excellant writer. You read resumes and provide a 150 word summary of their skills and experiances, based on the text from the resume 
+        model=model_name,
+        temperature=0.3,
+        max_tokens=300,
+        messages=[
+            {
+                "role": "system",
+                "content": f"""You are an excellant writer. You read resumes and provide a 150 word summary of their skills and experiances, based on the text from the resume 
                 \n {sample_sops}
-                """},
-                {"role": "user", "content": f"""Summarize this resume in 150 words {resume_text}
-                """}
-            ]
+                """,
+            },
+            {
+                "role": "user",
+                "content": f"""Summarize this resume in 150 words {resume_text}
+                """,
+            },
+        ],
     )
-        
 
-    resume = completion.choices[0]['message']['content']
-    return resume   
+    resume = completion.choices[0]["message"]["content"]
+    return resume
