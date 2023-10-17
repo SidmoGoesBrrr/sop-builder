@@ -371,9 +371,7 @@ def generate_sop(engine, word_limit, program, university, field_interest, career
         resume=""
     else:
         resume=f"Also consider the following skills and work experiance while writing the SOP, if you think it fits. {resume_text}"
-        
-    while True:
-        completion = openai.ChatCompletion.create(
+    completion = openai.ChatCompletion.create(
             model=model_name,
             messages=[
                 {"role": "system", "content": f"""
@@ -399,14 +397,9 @@ def generate_sop(engine, word_limit, program, university, field_interest, career
             ]
         )
 
-        sop_content = completion.choices[0]['message']['content']
-        sop_words = sop_content.split()
-
-        if len(sop_words) >= word_limit:
-            return sop_content
-        else:
-            print("SOP length is less than the specified word limit. Trying again...\n")
-            time.sleep(70)
+    sop_content = completion.choices[0]['message']['content']
+        
+        
 
 def resume_summarize_with_gpt4(resume_text,engine):
     # Specify the prompt for GPT-3.5 Turbo
