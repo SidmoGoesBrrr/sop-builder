@@ -405,6 +405,7 @@ def generate_sop(engine, word_limit, program, university, field_interest, career
             return sop_content
         else:
             print("SOP length is less than the specified word limit. Trying again...\n")
+             time.sleep(70)
 
 def resume_summarize_with_gpt4(resume_text,engine):
     # Specify the prompt for GPT-3.5 Turbo
