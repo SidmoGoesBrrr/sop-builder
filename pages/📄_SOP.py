@@ -173,7 +173,7 @@ if st.session_state.get("user_logged_in") == True:
         sop_display_area.write(str(st.session_state.generated_sop))
     
     if state.section_index == len(text_areas) - 5:
-        if st.session_state.summary is None:
+        if not st.session_state.summary:
             uploaded_file = st.file_uploader("Upload your resume here", type=["pdf"])
             summary=None
             if uploaded_file is not None:
