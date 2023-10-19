@@ -1,9 +1,9 @@
 import openai
 import streamlit as st
 import time
-api_key=st.secrets["api_key"]
+import os
+os.environ['OPENAI_API_KEY'] = st.secrets['OPENAI_API_KEY']
 
-openai.api_key = api_key
 
 @st.cache_data
 def get_instructions():
