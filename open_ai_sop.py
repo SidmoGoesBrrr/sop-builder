@@ -45,7 +45,7 @@ The SOP should be free of grammatical and spelling errors and should be between 
 
 @st.cache_data
 def get_sample_sops():
-    sample_sops = """Sample SOP 1: MS in Data Science
+    sample_sops_cached = """Sample SOP 1: MS in Data Science
 
     University of Pennsylvania
 
@@ -368,7 +368,8 @@ earn money, but live life on their own terms!
 
 
           """
-    return sample_sops
+    return sample_sops_cached
+
 instructions=get_instructions()
 sample_sops=get_sample_sops()
 def generate_sop(
