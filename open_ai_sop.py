@@ -3,6 +3,7 @@ import streamlit as st
 import time
 import os
 os.environ['OPENAI_API_KEY'] = st.secrets['OPENAI_API_KEY']
+openai.api_key = os.environ['OPENAI_API_KEY']
 
 
 @st.cache_data
