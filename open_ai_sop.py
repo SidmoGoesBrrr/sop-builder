@@ -435,16 +435,10 @@ def generate_sop(
     return sop_content
 
 
-def resume_summarize_with_gpt(resume_text, engine):
-    # Specify the prompt for GPT-3.5 Turbo
-    if engine.lower() == "gpt-3.5":
-        model_name = "gpt-3.5-turbo-16k"
-    elif engine.lower() == "gpt-4":
-        model_name = "gpt-4"
-    else:
-        raise ValueError("Invalid engine. Supported engines are 'gpt-3.5' and 'gpt-4'.")
+def resume_summarize_with_gpt(resume_text):
+
     completion = openai.ChatCompletion.create(
-        model=model_name,
+        model="gpt3.5-turbo",
         temperature=0.3,
         max_tokens=300,
         messages=[

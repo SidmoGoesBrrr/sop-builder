@@ -2,6 +2,9 @@ import streamlit as st
 
 from open_ai_sop import generate_sop,resume_summarize_with_gpt
 # Check if the user is logged in
+from streamlit_lottie import st_lottie
+import requests
+
 
 
 if st.session_state.get("user_logged_in") == True:
@@ -185,33 +188,30 @@ if st.session_state.get("user_logged_in") == True:
         if "summary" not in st.session_state or st.session_state.summary=="":
             uploaded_file = st.file_uploader("Upload your resume here", type=["pdf"])
             if uploaded_file is not None:
-                status_placeholder = st.empty()
             
-                status_placeholder.info("Resume Uploaded!")
-                time.sleep(0.5)
-                status_placeholder.info("Extracting text from the resume...")
-    
-                # Save the uploaded file temporarily with a unique filename
-                temp_file_path = f"temp_resume_{str(st.session_state.user_id)}.pdf"
-                with open(temp_file_path, "wb") as temp_file:
-                    temp_file.write(uploaded_file.getvalue())
-                option = st.selectbox("Which model of chat GPT would you like to use?", ["GPT-3.5", "GPT-4"])
-                # Extract text from the uploaded PDF
-                resume_text = extract_text_from_pdf(temp_file_path)
-    
-                status_placeholder.info("Extracted text from the resume.")
-    
-                # Summarize the resume using GPT-3.5 Turbo
-                status_placeholder.info("Summarizing the resume...")
-                summary = resume_summarize_with_gpt(resume_text,option)
-                status_placeholder.info("Summary generated.")
-    
-                # Display the summarized text
-                
-    
-                # Remove the temporary PDF file
-                os.remove(temp_file_path)
-                st.session_state.summary=summary
+                with st.status("Summarizing Resume", expanded=True) as status:
+                    st.write("Parsing the resume...")
+                    # Save the uploaded file temporarily with a unique filename
+                    temp_file_path = f"temp_resume_{str(st.session_state.user_id)}.pdf"
+                    with open(temp_file_path, "wb") as temp_file:
+                        temp_file.write(uploaded_file.getvalue())
+                    # Extract text from the uploaded PDF
+                    resume_text = extract_text_from_pdf(temp_file_path)
+                    st.write("Summarizing the resume...")
+        
+                    # Summarize the resume using GPT-3.5 Turbo
+                    summary = resume_summarize_with_gpt(resume_text)
+                    st.write("Resume Summary:")
+                    st.write(summary)
+
+                    # Display the summarized text
+                    
+
+                    # Remove the temporary PDF file
+                    os.remove(temp_file_path)
+                    st.session_state.summary=summary
+                    status.update(label="Resume Summarized!", state="complete", expanded=False)
+
 
     with col1:
         if state.section_index == 0:
@@ -290,9 +290,9 @@ if st.session_state.get("user_logged_in") == True:
 
         elif state.section_index == len(text_areas) - 2:
 
-            if st.button("Generate SOP✅"):
-                save_to_database(current_section_key, text)
-                with st.spinner("Generating SOP"):
+            if st.button("Generate SOP✅", disabled=st.session_state.generated_sop is not None):
+                with st.status("Generating Sop...", expanded=True) as sop_status:
+                    save_to_database(current_section_key, text)
                     user_data = database.get_user_data_by_id(st.session_state.user_id)
                     fetched_data = {
                         "program": user_data.get("program", ""),
@@ -305,6 +305,7 @@ if st.session_state.get("user_logged_in") == True:
                         "program_benefits": user_data.get("program_benefits", []),
                         "contribution": user_data.get("contribution", [])
                     }
+                    st.write("Sending request to openAI")
                     state.section_index = min(len(text_areas) - 1, state.section_index + 1)
 
                     # Call the generate_sop function with the required arguments
@@ -315,10 +316,13 @@ if st.session_state.get("user_logged_in") == True:
                         **fetched_data
                             # Unpack the fetched_data dictionary to pass as arguments
                     )
+                    st.write("SOP Generated Successfully")
                     st.session_state.generated_sop=generated_sop
                     display_sop(st.session_state.generated_sop)
                     print(st.session_state.generated_sop)
                     st.rerun()
+                    sop_status.update(label="SOP Generated", state="complete", expanded=False)
+
 
         else:
             if st.button("Next➡️"):
