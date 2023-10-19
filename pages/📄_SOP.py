@@ -2,7 +2,6 @@ import streamlit as st
 
 from open_ai_sop import generate_sop,resume_summarize_with_gpt
 # Check if the user is logged in
-from streamlit_lottie import st_lottie
 import requests
 
 
