@@ -89,7 +89,7 @@ if st.session_state.get("user_logged_in") == True:
         else:
             return 0
 
-    @st.cache
+    @st.cache_data
     def load_text():
       text_dict={
         "program": {

@@ -5,7 +5,7 @@ api_key=st.secrets["api_key"]
 
 openai.api_key = api_key
 
-@st.cache
+@st.cache_data
 def get_instructions():
     instructions_cached = """Imagine you are a student applying for a graduate program at a prestigious university. You need to craft a compelling Statement of Purpose (SOP) to showcase your qualifications and motivations. Your goal is to demonstrate your fit for the program and your potential as a future academic or professional in the field.
 
@@ -43,7 +43,7 @@ The SOP should be free of grammatical and spelling errors and should be between 
 """
     return instructions_cached
 
-@st.cache
+@st.cache_data
 def get_sample_sops():
     sample_sops = """Sample SOP 1: MS in Data Science
 
