@@ -1,6 +1,6 @@
 import streamlit as st
 
-from open_ai_sop import generate_sop,resume_summarize_with_gpt4
+from open_ai_sop import generate_sop,resume_summarize_with_gpt
 # Check if the user is logged in
 
 
@@ -184,10 +184,9 @@ if st.session_state.get("user_logged_in") == True:
     if state.section_index == len(text_areas) - 5:
         if "summary" not in st.session_state or st.session_state.summary=="":
             uploaded_file = st.file_uploader("Upload your resume here", type=["pdf"])
-            summary=None
             if uploaded_file is not None:
                 status_placeholder = st.empty()
-    
+            
                 status_placeholder.info("Resume Uploaded!")
                 time.sleep(0.5)
                 status_placeholder.info("Extracting text from the resume...")
@@ -204,7 +203,7 @@ if st.session_state.get("user_logged_in") == True:
     
                 # Summarize the resume using GPT-3.5 Turbo
                 status_placeholder.info("Summarizing the resume...")
-                summary = resume_summarize_with_gpt4(resume_text,option)
+                summary = resume_summarize_with_gpt(resume_text,option)
                 status_placeholder.info("Summary generated.")
     
                 # Display the summarized text
@@ -212,7 +211,7 @@ if st.session_state.get("user_logged_in") == True:
     
                 # Remove the temporary PDF file
                 os.remove(temp_file_path)
-            st.session_state.summary=summary
+                st.session_state.summary=summary
 
     with col1:
         if state.section_index == 0:
@@ -330,7 +329,7 @@ if st.session_state.get("user_logged_in") == True:
                     state.section_index = min(len(text_areas) - 1, state.section_index + 1)
                     save_to_database(current_section_key, text)
                     show_success_banner()
-                    time.sleep(1)
+                    time.sleep(0.2)
                     st.rerun()
                 else:
                     error_msg(current_section['question'])

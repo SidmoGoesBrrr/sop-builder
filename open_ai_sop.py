@@ -435,7 +435,7 @@ def generate_sop(
     return sop_content
 
 
-def resume_summarize_with_gpt4(resume_text, engine):
+def resume_summarize_with_gpt(resume_text, engine):
     # Specify the prompt for GPT-3.5 Turbo
     if engine.lower() == "gpt-3.5":
         model_name = "gpt-3.5-turbo-16k"
