@@ -1,8 +1,8 @@
 import openai
 import streamlit as st
 import time
-
-openai.api_key = st.secrets["api_key"]
+api_key=st.secrets["api_key"]
+openai.api_key = api_key
 instructions = """Imagine you are a student applying for a graduate program at a prestigious university. You need to craft a compelling Statement of Purpose (SOP) to showcase your qualifications and motivations. Your goal is to demonstrate your fit for the program and your potential as a future academic or professional in the field.
 
 Use the information provided by the user to write the Statement of Purpose. 
@@ -39,7 +39,7 @@ The SOP should be free of grammatical and spelling errors and should be between 
 """
 
 sample_sops = """Sample SOP 1: MS in Data Science
-     
+
     University of Pennsylvania
 
 Traditionally, winning in sports has been a function of effective team ownership and hiring the best
@@ -123,7 +123,7 @@ also apply to the Wharton Sports Analytics Initiative to build on my understandi
 analytics.
 I am confident that with my experience and coursework, I will be able to thrive in Penn’s MSE in
 DATS program. I therefore, submit my application for your kind consideration.
-    
+
 Sample SOP 2 : Master in Information Systems
 
 Information systems is an emerging field that has received serious attention in the last few years. A few years
@@ -190,7 +190,7 @@ in Information Systems. I want to see myself as a successful Information Systems
 Architect, or Database Analyst in the coming years. I intend to return to India to support my family, who have
 contributed to my career immensely over the years. I will be highly obliged to go through my application and
 take admission to Northeastern University, Boston, USA.
-    
+
 Sample SOP 3: MS in Mechanical Engineering
 When compared to other species, humans do not have any physical trait that stands out. We
 are not the tallest, the fastest or even the strongest of any species. Yet, humans are
@@ -263,7 +263,7 @@ companies like Baker Hughes, Bowman, Vertech and WSB Inc. . Working with such co
 will allow me to put my knowledge to practice and implement innovative ideas to solve the
 important problems related to clean energy systems and leakage of energy. To sum up, UT
 Austin is a place that will help me achieve my goal of reducing our consumption
-     
+
 
 Sample SOP 5: Masters in Engineering Management
      “What do ‘stocks’ mean?”
@@ -358,29 +358,31 @@ made investments in a variety of capital instruments giving them a passive incom
 envision my future to be. I am certain that the experience gained through the three chapters of my life, the
 learnings from the MS&E program and the tag as a Stanford alumnus, will help me enable others to no just
 earn money, but live life on their own terms!
-     
+
 
           """
 
 
 def generate_sop(
-    engine,
-    word_limit,
-    program,
-    university,
-    field_interest,
-    career_goal,
-    subjects_studied,
-    projects_internships,
-    lacking_skills,
-    program_benefits,
-    contribution,
-    resume_text=None,
+        engine,
+        word_limit,
+        program,
+        university,
+        field_interest,
+        career_goal,
+        subjects_studied,
+        projects_internships,
+        lacking_skills,
+        program_benefits,
+        contribution,
+        resume_text=None,
 ):
     if engine == "gpt-3.5":
         model_name = "gpt-3.5-turbo-16k"
     elif engine == "gpt-4":
         model_name = "gpt-4"
+    elif not engine:
+        model_name = "gpt-3.5-turbo-16k"
     else:
         raise ValueError("Invalid engine. Supported engines are 'gpt-3.5' and 'gpt-4'.")
     if resume_text is None:
@@ -419,8 +421,9 @@ def generate_sop(
             },
         ],
     )
-
+    print("jh")
     sop_content = completion.choices[0]["message"]["content"]
+    print(sop_content)
     return sop_content
 
 
