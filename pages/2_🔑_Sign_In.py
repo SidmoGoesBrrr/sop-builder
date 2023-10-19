@@ -41,6 +41,7 @@ def nav_page(page_name, timeout_secs=3):
         </script>
     """ % (page_name, timeout_secs)
     html(nav_script)
+    
 def send_otp(phone_no,otp):
     # url = "http://iqsms.airtel.in/api/v1/send-sms"
 

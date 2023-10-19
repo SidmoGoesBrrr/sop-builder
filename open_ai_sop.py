@@ -2,8 +2,12 @@ import openai
 import streamlit as st
 import time
 api_key=st.secrets["api_key"]
+
 openai.api_key = api_key
-instructions = """Imagine you are a student applying for a graduate program at a prestigious university. You need to craft a compelling Statement of Purpose (SOP) to showcase your qualifications and motivations. Your goal is to demonstrate your fit for the program and your potential as a future academic or professional in the field.
+
+@st.cache
+def get_instructions():
+    instructions_cached = """Imagine you are a student applying for a graduate program at a prestigious university. You need to craft a compelling Statement of Purpose (SOP) to showcase your qualifications and motivations. Your goal is to demonstrate your fit for the program and your potential as a future academic or professional in the field.
 
 Use the information provided by the user to write the Statement of Purpose. 
 
@@ -37,8 +41,11 @@ Remember to maintain a clear, concise, and genuine tone throughout the SOP. Focu
 
 The SOP should be free of grammatical and spelling errors and should be between 900 to 1100 words. Also, the SOP should flow properly. Each sentence should connect well with the next. And each paragraph should connect well with the next.
 """
+    return instructions_cached
 
-sample_sops = """Sample SOP 1: MS in Data Science
+@st.cache
+def get_sample_sops():
+    sample_sops = """Sample SOP 1: MS in Data Science
 
     University of Pennsylvania
 
@@ -361,8 +368,9 @@ earn money, but live life on their own terms!
 
 
           """
-
-
+    return sample_sops
+instructions=get_instructions()
+sample_sops=get_sample_sops()
 def generate_sop(
         engine,
         word_limit,

@@ -89,8 +89,9 @@ if st.session_state.get("user_logged_in") == True:
         else:
             return 0
 
-        
-    text_areas = {
+    @st.cache
+    def load_text():
+      text_dict={
         "program": {
             "question": "Which program is this SOP for?",
             "placeholder": "e.g., Master's in Computer Science"
@@ -131,6 +132,8 @@ if st.session_state.get("user_logged_in") == True:
             "question": "Thank you for using SOP Generate. We hope you found it useful. If you did, please share it with your friends and family. If you have any feedback, please write to us at <<email address>>. We would love to hear from you.",
         }
     }
+      return text_dict
+    text_areas = load_text()
 
     # Streamlit app
     st.markdown("<h1 style='text-align: center; color: #80ed99;'>Welcome to the Statement of Purpose Generator</h1>",
