@@ -149,21 +149,27 @@ if st.session_state.get("user_logged_in") == True:
 
     if "generated_sop" not in st.session_state:
         st.session_state.generated_sop = ""
-
+    if "option" not in st.session_state:
+        st.session_state.option = ""
     # Display the current section
     current_section_key = list(text_areas.keys())[state.section_index]
     current_section = text_areas[current_section_key]
     try:
-        previous_text = database.get_user_data_by_id(st.session_state.user_id)[current_section_key]
-        st.write(f"### {current_section['question']}")
-        text = st.text_area(" ", key=current_section_key, value=previous_text,
-                            placeholder=current_section["placeholder"],
-                            height=300)
-        word_count = count_words(text)
-        st.text(f"Word Count: {word_count}")
-        st.session_state.word_count = word_count
-    except:
-        previous_text = ""
+        if current_section["question"] == 'end_screen':
+            st.session_state.section_index = len(text_areas) - 1
+        else:
+            previous_text = database.get_user_data_by_id(st.session_state.user_id)[current_section_key]
+            st.write(f"### {current_section['question']}")
+            text = st.text_area(" ", key=current_section_key, value=previous_text,
+                                placeholder=current_section["placeholder"],
+                                height=300)
+            word_count = count_words(text)
+            st.text(f"Word Count: {word_count}")
+            st.session_state.word_count = word_count
+    except Exception as e:
+        print("Exception in displaying text area")
+        print(e)
+        pass
 
     # Navigation buttons
     sop_display_area=st.empty()
@@ -260,7 +266,7 @@ if st.session_state.get("user_logged_in") == True:
 
             # Call the generate_sop function with the required arguments
             generated_sop = generate_sop(
-                engine='gpt-4',
+                engine='st.session_state.option.lower()',
                 word_limit=word_limit,  # Adjust word limit accordingly
                 **fetched_data  # Unpack the fetched_data dictionary to pass as arguments
             )
@@ -301,15 +307,15 @@ if st.session_state.get("user_logged_in") == True:
 
                     # Call the generate_sop function with the required arguments
                     generated_sop = generate_sop(
-                        engine=option.lower(),
+                        engine=st.session_state.option.lower(),
                         word_limit=800,
                         resume_text=st.session_state.summary,   # Adjust word limit accordingly
                         **fetched_data
                             # Unpack the fetched_data dictionary to pass as arguments
                     )
                     st.session_state.generated_sop=generated_sop
-                    display_sop(generated_sop)
-                    print(generated_sop)
+                    display_sop(st.session_state.generated_sop)
+                    print(st.session_state.generated_sop)
                     st.rerun()
 
         else:
