@@ -289,7 +289,7 @@ if st.session_state.get("user_logged_in") == True:
 
         elif state.section_index == len(text_areas) - 2:
 
-            if st.button("Generate SOP✅", disabled=st.session_state.generated_sop is not None):
+            if st.button("Generate SOP✅", disabled=st.session_state.generated_sop !=""):
                 with st.status("Generating Sop...", expanded=True) as sop_status:
                     save_to_database(current_section_key, text)
                     user_data = database.get_user_data_by_id(st.session_state.user_id)
