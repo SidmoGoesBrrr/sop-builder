@@ -438,7 +438,7 @@ def generate_sop(
 def resume_summarize_with_gpt(resume_text):
 
     completion = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
+        model="gpt-3.5-turbo-16k",
         temperature=0.3,
         max_tokens=300,
         messages=[
