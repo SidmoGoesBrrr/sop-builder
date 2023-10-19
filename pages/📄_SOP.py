@@ -278,7 +278,7 @@ if st.session_state.get("user_logged_in") == True:
                 st.rerun()
         # NEW STUFF
         elif state.section_index == len(text_areas) - 2:
-            option = st.selectbox("Which model of chat GPT would you like to use?", ["GPT-3.5", "GPT-4"])
+            st.session_state.option = st.selectbox("Which model of chat GPT would you like to use?", ["GPT-3.5", "GPT-4"])
 
     with col5:
         if state.section_index == len(text_areas) - 1:
