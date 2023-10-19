@@ -267,7 +267,7 @@ if st.session_state.get("user_logged_in") == True:
 
             # Call the generate_sop function with the required arguments
             generated_sop = generate_sop(
-                engine='st.session_state.option.lower()',
+                engine=st.session_state.option.lower(),
                 word_limit=word_limit,  # Adjust word limit accordingly
                 **fetched_data  # Unpack the fetched_data dictionary to pass as arguments
             )
