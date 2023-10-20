@@ -2,14 +2,19 @@ import openai
 import streamlit as st
 import time
 import os
-os.environ['OPENAI_API_KEY'] = st.secrets['OPENAI_API_KEY']
-openai.api_key = os.environ['OPENAI_API_KEY']
 import tiktoken
+
+os.environ['OPENAI_API_KEY'] = st.secrets['api_key']
+openai.api_key = os.environ['OPENAI_API_KEY']
+
 
 @st.cache_data
 def load_tokens():
     encoding = tiktoken.get_encoding("cl100k_base")
+
+
 load_tokens()
+
 
 def num_tokens_from_string(string: str, encoding_name: str) -> int:
     """Returns the number of tokens in a text string."""
@@ -17,50 +22,38 @@ def num_tokens_from_string(string: str, encoding_name: str) -> int:
     num_tokens = len(encoding.encode(string))
     return num_tokens
 
+
 @st.cache_data
 def get_instructions():
     instructions_cached = """Imagine you are a student applying for a graduate program at a prestigious university. You need to craft a compelling Statement of Purpose (SOP) to showcase your qualifications and motivations. Your goal is to demonstrate your fit for the program and your potential as a future academic or professional in the field.
-
 Use the information provided by the user to write the Statement of Purpose. 
-
 The statement of purpose should clearly cover all sections mentioned below:
-
 1. Introduction
 The introduction should describe how the user became interested in a particular field. Describe a series of events or narrate a life changing event or justify with a problem the student aims to solve.
-
 2. Career Goals
 The SOP should clearly describe the users career goal. The goal should be as specific as possible and should be relevant to the program the user wishes to pursue*
-
 3. Education Background
 Write about 2-3 relevant subjects the user studied in undergraduate education - and describe what skills / knowledge the user gained through those subjects and how the gained skills / knowledge is relevant to the program the user is applying to.
-
 4. Projects, Research, Internships & Work Experience
 Include paragraphs to describe relevant projects, research work, internships and work experience. The chosen experiences should be relevant to the program applied to and each experience described should explain how it created impact and how it brought the user closer to their career goal.
-
 5. Skills / Knowledge Missing
 Include a few knowledge pieces, skills the user is currently missing. These should be knowledge pieces / skills the student needs to achieve their career goal and which the student doesn't currently have.
-
 6. Why this program & university
 Write about why applying to the particular program and university is necessary for the user. Explain how the user will get the necessary knowledge, skills through the program & university. Write about specific courses, research work at the university and other activities at the university that would help the student. 
-
 7. How the user can contribute to the university
 Write how the user can contribute to the university, their peers, classroom discussion and student community. You could also explain how the student's background would enrich their peers experience or help the university in particular research areas. 
-
 8. Conclusion
 Summarize the main points and reiterate enthusiasm for the program and dedication to succeed. End with a positive note, expressing gratitude for the opportunity to apply.
-
 Remember to maintain a clear, concise, and genuine tone throughout the SOP. Focus on demonstrating your passion, qualifications, and alignment with the program and university. Feel free to elaborate on each section and use personal experiences to illustrate your points.
-
 The SOP should be free of grammatical and spelling errors and should be between 900 to 1100 words. Also, the SOP should flow properly. Each sentence should connect well with the next. And each paragraph should connect well with the next.
 """
     return instructions_cached
 
+
 @st.cache_data
 def get_sample_sops():
     sample_sops_cached = """Sample SOP 1: MS in Data Science
-
     University of Pennsylvania
-
 Traditionally, winning in sports has been a function of effective team ownership and hiring the best
 coaches. Decisions on which players to select, trade and how to play were based on experience and
 perceptions about players. That was till the Oakland Athletics (the A’s) Baseball team placed first in
@@ -103,7 +96,6 @@ University’s (CMU) Xu Labs. I was one of the few students selected globally an
 classifying 3-D sub-cellular structures based on their shape using state of the art neural networks.
 The project will provide a better understanding of subcellular structures which is essential in
 determining the origin and spread of a disease along with ways of eliminating them.
-
 While I enjoyed my work with Xu Labs, I missed being physically present at CMU due to travel
 restrictions placed on account of the COVID pandemic. However, even when travel restrictions were
 later relaxed, people refrained from traveling. After all, there was no mechanism to ensure that
@@ -142,9 +134,7 @@ also apply to the Wharton Sports Analytics Initiative to build on my understandi
 analytics.
 I am confident that with my experience and coursework, I will be able to thrive in Penn’s MSE in
 DATS program. I therefore, submit my application for your kind consideration.
-
 Sample SOP 2 : Master in Information Systems
-
 Information systems is an emerging field that has received serious attention in the last few years. A few years
 back, it started with manual systems that included Customer Databases. Catalogues have now turned into
 advanced modern concepts like Data Mining. The massive development in this field has fascinated me and
@@ -152,7 +142,6 @@ motivated me to pursue a career in Information Systems. With extensive knowledge
 Python, HTML, CSS, and JavaScript, I feel that I am ready to take the next step in my career in the field of
 MIS. To keep up with the industry standards and equip myself with better skills, I have decided to pursue a
 Master of Science degree in Information Systems from Northeastern University, Boston.
-
 In my high school days, I was keen to learn more about computers, mathematics and other topics related to
 science. I hope to learn more about my subjects of interest. I applied for an undergraduate degree program at
 Mukesh Patel School of Technology Management and Engineering (NMIMS University), Mumbai. The
@@ -163,7 +152,6 @@ Database Administration. I did thorough research and studied these subjects with
 me polish my skills and knowledge in understanding how different concepts work and how Information
 Systems can significantly impact our lives. During this time, I got the opportunity to do several internships at
 well-known companies, which greatly added to my learnings and developed more interest in the field.
-
 With a keen interest in knowing more about Information Systems and their different aspects, I have completed
 a few professional courses to understand the subject better. These courses include "Google Analytics For
 Beginners" offered by Google and "Introduction to Data Science".These courses delivered a wholesome
@@ -176,8 +164,6 @@ courses have allowed me to prepare myself for the latter. In the last three year
 numerous webinars and workshops like the Industrial automation, and robotics training - ISA Maharashtra,
 Workshop on Cloud Computing - MPSTME, Capgemini - Tech Challenge (Data Analytics), and Global
 Assessment of Information Technology (GAIT) - Bronze Certified conducted by Japan Third Party.
-
-
 After a few months of learning and extensive research in Information Systems, I realized it was time to explore
 new challenges and gather more professional experience. I worked as a Web developer intern at Being Digital
 for six weeks. I was given the responsibility to create a medical website using Ruby On Rails. My website
@@ -189,7 +175,6 @@ with these companies and their management helped me to attain a good amount of p
 polished my communication, leadership, problem-solving, and teamwork skills with experts from different
 industries. Not only that, but I also learned all about workplace culture, employee relations, and leadership
 structure.I have worked on mobile applications and websites like Book Karo and Videshi Studies.
-
 Now that I have talked about my academics and professional experience, I would like to mention that I want
 to pursue my master's degree from the United States of America. The US degrees have an outstanding
 reputation around the world, and companies across the globe recognize them. Universities in the USA have
@@ -203,13 +188,11 @@ rigorous courses. I can pursue any concentration I might find of particular inte
 undoubtedly one of the best institutions offering a full-time Masters' degree in Information Systems. For
 decades they have helped students realize their goals and imbued them with the winning mentality. Their
 faculty is composed of the best professors and scholars from different countries.
-
 Since my personal and professional interests come together, my goal is to do a Master's degree and then work
 in Information Systems. I want to see myself as a successful Information Systems Manager, Computer Network
 Architect, or Database Analyst in the coming years. I intend to return to India to support my family, who have
 contributed to my career immensely over the years. I will be highly obliged to go through my application and
 take admission to Northeastern University, Boston, USA.
-
 Sample SOP 3: MS in Mechanical Engineering
 When compared to other species, humans do not have any physical trait that stands out. We
 are not the tallest, the fastest or even the strongest of any species. Yet, humans are
@@ -252,7 +235,6 @@ to identify my goals for pursuing a master’s degree.
 While studying energy related subjects, like Thermodynamics and Thermal Systems, I learnt
 that the machines we currently use to generate energy are not very efficient. A large
 proportion of the energy that we get by burning fossil fuels is lost during generation and
-
 transmission. This alarming fact threatens our very future. For one, it causes us to rapidly
 deplete existing reserves of fossil fuels – which would make fuel far more expensive. Second,
 the low efficiency forces us to burn more fuel than necessary to generate the required
@@ -282,8 +264,6 @@ companies like Baker Hughes, Bowman, Vertech and WSB Inc. . Working with such co
 will allow me to put my knowledge to practice and implement innovative ideas to solve the
 important problems related to clean energy systems and leakage of energy. To sum up, UT
 Austin is a place that will help me achieve my goal of reducing our consumption
-
-
 Sample SOP 5: Masters in Engineering Management
      “What do ‘stocks’ mean?”
 Her puzzled eyes looked at me for answers. Amruta, a girl all of 10, was at odds with the word. In 2021, I
@@ -294,20 +274,16 @@ the lack of financial literacy in India (990 million Indians are financially ill
 forces millions of Indians into debt traps and bankruptcy. In fact, it is estimated that in 2019, one Indian
 committed suicide every two hours due to bankruptcy. Looking at Amruta’s puzzled eyes shine on learning
 what stocks meant, I knew it was my responsibility to solve this problem.
-
 By 2028, I will launch ‘India’s First Financial Literacy App’ specifically curated to the needs of the semi-
 literate population of India. In 6 years, India is projected to have 300 million employed people within the age
-
 group of 18-25, with a disposable income of $2000 per annum. I aim to leverage internet penetration and
 the power of AI, to create an App that will provide value to these people in four ways. (1) Improve
 Accessibility: My experience with TechForChange taught me that in a diverse country like India, language
 barrier is a real issue. To mitigate the same my app will be available in more than 22 languages supported by
 robust voice assist. (2) Increase Awareness: A set of carefully curated and adaptive coursework which would
 teach users various financial concepts (3) Accelerate Participation in the Digital Economy: As India strives
-
 towards becoming a cash-less nation, my app would partner with several investment applications via cash-
 less mediums. (4) Provide Cognitive Learning: The app would keep track of the savings and investment
-
 behaviour of the user to suggest ways to improvise on both.
 To achieve the above goal, I need to be three people in one- an entrepreneur, a financer and an innovator.
 One can only connect the dots looking backwards. When I look back on my experiences, they fill me with
@@ -334,17 +310,13 @@ which would help predict stock prices using AI.
 I researched stock market trends over the previous 7 years and collated a historical dataset to come up with
 predictions. As a next step, I suggested the LSTM RNN algorithm which led to a decrease in MAPE (Mean
 absolute percentage error) (from 10.3 to 2). To ensure maximum coverage, I analysed financial news
-
 headlines to deduce market sentiments and used them to influence the prediction. Finally, I designed a web-
 App that would provide a user-friendly interface for a market novice. My project was published in the
-
 prestigious IEEE Xplore (link) and was elected as the best project in the department. Personally, this project
 helped me understand the market and is one of the cornerstones of my current thriving portfolio.
 Chapter 3: The Innovator
-
 In my senior year, I was selected for a competitive research assistantship at one of the top B-schools in Asia-
 SPJIMR. The objective of the research was to identify features influencing purchase behaviour of gift coupons
-
 at an American retail company. The dataset was huge (12685 entries) and involved challenging cleaning
 processes as it was procured through surveys. The main focus was to arrive at an accurate model: input of
 which would be customer demographics like gender, occupation, etc. and the output would predict whether
@@ -377,13 +349,14 @@ made investments in a variety of capital instruments giving them a passive incom
 envision my future to be. I am certain that the experience gained through the three chapters of my life, the
 learnings from the MS&E program and the tag as a Stanford alumnus, will help me enable others to no just
 earn money, but live life on their own terms!
-
-
           """
     return sample_sops_cached
 
-instructions=get_instructions()
-sample_sops=get_sample_sops()
+
+instructions = get_instructions()
+sample_sops = get_sample_sops()
+
+
 def generate_sop(
         engine,
         word_limit,
@@ -443,7 +416,7 @@ def generate_sop(
         ],
     )
     print(f"Model Used: {model_name}")
-    input_string="""{instructions} Here are some sample SOPs you can train yourself on and mimic their style:
+    input_string = """{instructions} Here are some sample SOPs you can train yourself on and mimic their style:
                 \n {sample_sops} Write an SOP with a word limit of minimum {word_limit} and maximum 1100
                 Here is my information:
                 Program: {program}
@@ -460,29 +433,28 @@ def generate_sop(
                 Rewrite all of this and write a good personal essay/SOP.
                 Make sure the number of words is between {word_limit}-1200!
 """
-    user_given_string=f"""Program: {program}
+    user_given_string = f"""Program: {program}
                 University: {university}
                 Introduction: {field_interest}
                 Career Goals: {career_goal}      
-                Education Background: {subjects_studied}   
+                Education Background: {subjects_studied}
                 Projects, Internship, Research Work: {projects_internships}
                 Skills Missing: {lacking_skills}       
                 Why this program and University: {program_benefits}       
                 How Can I Contribute: {contribution}      
                 Also, add a conclusion of your own."""
     print(f"Number of total input tokens used: {num_tokens_from_string(input_string, 'cl100k_base')}")
-    print(f"Number of total output tokens used: {num_tokens_from_string(completion.choices[0]['message']['content'], 'cl100k_base')}")
+    print(
+        f"Number of total output tokens used: {num_tokens_from_string(completion.choices[0]['message']['content'], 'cl100k_base')}")
     print(f"Resume tokens used: {num_tokens_from_string(resume, 'cl100k_base')}")
     print(f"Instructions tokens used: {num_tokens_from_string(instructions, 'cl100k_base')}")
     print(f"Sample SOPs tokens used: {num_tokens_from_string(sample_sops, 'cl100k_base')}")
     print(f"User input tokens used (Excluding resume): {num_tokens_from_string(user_given_string, 'cl100k_base')}")
     sop_content = completion.choices[0]["message"]["content"]
-    print(sop_content)
     return sop_content
 
 
 def resume_summarize_with_gpt(resume_text):
-
     completion = openai.ChatCompletion.create(
         model="gpt-3.5-turbo-16k",
         temperature=0.3,
@@ -503,6 +475,7 @@ def resume_summarize_with_gpt(resume_text):
     )
     print(f"Model Used: gpt-3.5-turbo-16k")
     print(f"Number of total input tokens used: {num_tokens_from_string(resume_text, 'cl100k_base')}")
-    print(f"Number of total output tokens used: {num_tokens_from_string(completion.choices[0]['message']['content'], 'cl100k_base')}")
+    print(
+        f"Number of total output tokens used: {num_tokens_from_string(completion.choices[0]['message']['content'], 'cl100k_base')}")
     resume = completion.choices[0]["message"]["content"]
     return resume
