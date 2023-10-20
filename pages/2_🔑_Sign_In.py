@@ -1,9 +1,6 @@
-
-import streamlit as st
 import random
 from pymongo import MongoClient
 from datetime import datetime
-import os
 from PIL import Image
 from database import *
 import requests
@@ -14,8 +11,10 @@ from io import BytesIO
 import time
 import database
 import pytz
+
 #####################################################################################################################################################
 from streamlit.components.v1 import html
+
 
 def nav_page(page_name, timeout_secs=3):
     nav_script = """
@@ -41,8 +40,9 @@ def nav_page(page_name, timeout_secs=3):
         </script>
     """ % (page_name, timeout_secs)
     html(nav_script)
-    
-def send_otp(phone_no,otp):
+
+
+def send_otp(phone_no, otp):
     # url = "http://iqsms.airtel.in/api/v1/send-sms"
 
     # payload = {
@@ -66,6 +66,7 @@ def send_otp(phone_no,otp):
     # print(response.text)
     pass
 
+
 # Call the function with the OTP
 im = Image.open('icon.png')
 st.set_page_config(page_title="SOP Generator", page_icon=im)
@@ -73,10 +74,10 @@ if 'gen_button' not in st.session_state:
     st.session_state.disabled = True
 st.header("Sign In")
 username = st.text_input("Name")
-phone_number = st.text_input("Mobile Number",placeholder="9631331342")
+phone_number = st.text_input("Mobile Number", placeholder="9631331342")
 if username is not None and phone_number is not None:
     st.session_state.disabled = False
-generate_otp = st.button("Generate OTP",disabled=st.session_state.disabled,key='gen_button')
+generate_otp = st.button("Generate OTP", disabled=st.session_state.disabled, key='gen_button')
 
 if st.session_state.get('button') != True:
     st.session_state['button'] = generate_otp
@@ -84,29 +85,33 @@ if st.session_state.get('button') != True:
 
 if st.session_state['button'] == True:
     st.session_state.disabled = True
-    if len(phone_number)!=10 or phone_number is None:
+    if len(phone_number) != 10 or phone_number is None:
         st.error("Sorry, not a valid phone number")
         st.session_state.disabled = False
         time.sleep(1)
         st.experimental_rerun()
     else:
-        if username in [user['username'] for user in users_collection.find()] and phone_number in [user['phone_number'] for user in users_collection.find()]:
+        if username in [user['username'] for user in users_collection.find()] and phone_number in [user['phone_number']
+                                                                                                   for user in
+                                                                                                   users_collection.find()]:
             otp = st.text_input("OTP")
-            generated_otp=str(random.randint(1000, 9999))
-            send_otp(phone_number,generated_otp)
+            generated_otp = str(random.randint(1000, 9999))
+            send_otp(phone_number, generated_otp)
             if st.button('Login'):
                 if otp == "1234":
                     st.success("Logged in Successfully.")
                     st.session_state.user_logged_in = True
-                    st.session_state.user_id=str(get_user_data(username)['_id'])
+                    st.session_state.user_id = str(get_user_data(username)['_id'])
                     print(st.session_state.user_id)
                     ist = pytz.timezone('Asia/Kolkata')
                     time.sleep(2)
-                    
+
                     update_user(username=username,
                                 data={"last_logged_in": datetime.now(ist).strftime("%A,%d %B %Y - %H:%M:%S")})
-                    nav_page("sop")
-                    
+                    import os
+                    os.rename(r'pages/2_🔑_Sign_In.py', r'lages/2_🔑_Sign_In.py')
+                    os.rename(r'lages/2_🔑_Sign_Out.py', r'pages/2_🔑_Sign_Out.py')
+                    nav_page("")
 
                 else:
                     st.error("Invalid OTP")
