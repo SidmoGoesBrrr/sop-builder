@@ -358,7 +358,6 @@ sample_sops = get_sample_sops()
 
 
 def generate_sop(
-        engine,
         word_limit,
         program,
         university,
@@ -371,21 +370,14 @@ def generate_sop(
         contribution,
         resume_text=None,
 ):
-    if engine == "gpt-3.5":
-        model_name = "gpt-3.5-turbo-16k"
-    elif engine == "gpt-4":
-        model_name = "gpt-4"
-    elif not engine:
-        model_name = "gpt-3.5-turbo-16k"
-    else:
-        raise ValueError("Invalid engine. Supported engines are 'gpt-3.5' and 'gpt-4'.")
+    
     if resume_text is None:
         resume = ""
     else:
         resume = f"Also consider the following skills and work experiance while writing the SOP, if you think it fits. {resume_text}"
 
     completion = openai.ChatCompletion.create(
-        model=model_name,
+        model="gpt-3.5-turbo-16k",
         messages=[
             {
                 "role": "system",

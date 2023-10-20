@@ -138,8 +138,7 @@ if 'word_count' not in st.session_state:
 if "generated_sop" not in st.session_state:
     st.session_state.generated_sop = ""
 
-if "option" not in st.session_state:
-    st.session_state.option = ""
+
 
 if "summary" not in st.session_state:
     st.session_state.summary = ""
@@ -274,7 +273,6 @@ else:
 
             # Call the generate_sop function with the required arguments
             generated_sop = generate_sop(
-                engine=st.session_state.option.lower(),
                 word_limit=st.session_state.word_limit,  # Adjust word limit accordingly
                 **fetched_data  # Unpack the fetched_data dictionary to pass as arguments
             )
@@ -298,9 +296,7 @@ else:
                 display_sop(generated_sop)
                 st.rerun()
 
-        elif state.section_index == len(text_areas) - 2:
-            st.session_state.option = st.selectbox("Which model of chat GPT would you like to use?",
-                                                   ["GPT-3.5", "GPT-4"])
+            
 
     with col5:
         if state.section_index == len(text_areas) - 1:
@@ -330,7 +326,6 @@ else:
 
                     # Call the generate_sop function with the required arguments
                     generated_sop = generate_sop(
-                        engine=st.session_state.option.lower(),
                         word_limit=st.session_state.word_limit,
                         resume_text=st.session_state.summary,  # Adjust word limit accordingly
                         **fetched_data
