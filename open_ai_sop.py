@@ -501,6 +501,8 @@ def resume_summarize_with_gpt(resume_text):
             },
         ],
     )
-
+    print(f"Model Used: gpt-3.5-turbo-16k")
+    print(f"Number of total input tokens used: {num_tokens_from_string(resume_text, 'cl100k_base')}")
+    print(f"Number of total output tokens used: {num_tokens_from_string(completion.choices[0]['message']['content'], 'cl100k_base')}")
     resume = completion.choices[0]["message"]["content"]
     return resume
