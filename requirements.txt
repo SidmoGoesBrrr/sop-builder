@@ -8,3 +8,4 @@ pymongo
 reportlab
 PyPDF2
 pytz
+tiktoken

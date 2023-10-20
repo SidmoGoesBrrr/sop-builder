@@ -318,7 +318,6 @@ if st.session_state.get("user_logged_in") == True:
                     st.write("SOP Generated Successfully")
                     st.session_state.generated_sop=generated_sop
                     display_sop(st.session_state.generated_sop)
-                    print(st.session_state.generated_sop)
                     st.rerun()
                     sop_status.update(label="SOP Generated", state="complete", expanded=False)
 

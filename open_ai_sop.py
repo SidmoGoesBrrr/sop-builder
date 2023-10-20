@@ -4,7 +4,18 @@ import time
 import os
 os.environ['OPENAI_API_KEY'] = st.secrets['OPENAI_API_KEY']
 openai.api_key = os.environ['OPENAI_API_KEY']
+import tiktoken
 
+@st.cache_data
+def load_tokens():
+    encoding = tiktoken.get_encoding("cl100k_base")
+load_tokens()
+
+def num_tokens_from_string(string: str, encoding_name: str) -> int:
+    """Returns the number of tokens in a text string."""
+    encoding = tiktoken.get_encoding("cl100k_base")
+    num_tokens = len(encoding.encode(string))
+    return num_tokens
 
 @st.cache_data
 def get_instructions():
@@ -431,7 +442,40 @@ def generate_sop(
             },
         ],
     )
-    print("jh")
+    print(f"Model Used: {model_name}")
+    input_string="""{instructions} Here are some sample SOPs you can train yourself on and mimic their style:
+                \n {sample_sops} Write an SOP with a word limit of minimum {word_limit} and maximum 1100
+                Here is my information:
+                Program: {program}
+                University: {university}
+                Introduction: {field_interest}
+                Career Goals: {career_goal}      
+                Education Background: {subjects_studied}   
+                Projects, Internship, Research Work: {projects_internships}
+                Skills Missing: {lacking_skills}       
+                Why this program and University: {program_benefits}       
+                How Can I Contribute: {contribution}      
+                Also, add a conclusion of your own.
+                {resume} 
+                Rewrite all of this and write a good personal essay/SOP.
+                Make sure the number of words is between {word_limit}-1200!
+"""
+    user_given_string=f"""Program: {program}
+                University: {university}
+                Introduction: {field_interest}
+                Career Goals: {career_goal}      
+                Education Background: {subjects_studied}   
+                Projects, Internship, Research Work: {projects_internships}
+                Skills Missing: {lacking_skills}       
+                Why this program and University: {program_benefits}       
+                How Can I Contribute: {contribution}      
+                Also, add a conclusion of your own."""
+    print(f"Number of total input tokens used: {num_tokens_from_string(input_string, 'cl100k_base')}")
+    print(f"Number of total output tokens used: {num_tokens_from_string(completion.choices[0]['message']['content'], 'cl100k_base')}")
+    print(f"Resume tokens used: {num_tokens_from_string(resume, 'cl100k_base')}")
+    print(f"Instructions tokens used: {num_tokens_from_string(instructions, 'cl100k_base')}")
+    print(f"Sample SOPs tokens used: {num_tokens_from_string(sample_sops, 'cl100k_base')}")
+    print(f"User input tokens used (Excluding resume): {num_tokens_from_string(user_given_string, 'cl100k_base')}")
     sop_content = completion.choices[0]["message"]["content"]
     print(sop_content)
     return sop_content
