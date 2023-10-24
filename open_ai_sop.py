@@ -58,6 +58,9 @@ def generate_sop(
 
     completion = openai.ChatCompletion.create(
         model=model_name,
+        temperature=0.2,
+        top_p=1,
+        best_of=1,
         messages=[
             {
                 "role": "system",

@@ -337,6 +337,7 @@ else:
                             **fetched_data)
                         st.write("SOP Generated Successfully")
                         st.session_state.generated_sop = generated_sop
+                        time.sleep(0.2)
                         st.rerun()
                         display_sop(st.session_state.generated_sop)
                         user_data = database.get_user_data_by_id(st.session_state.user_id)
