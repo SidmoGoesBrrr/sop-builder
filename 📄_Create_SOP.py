@@ -14,12 +14,18 @@ import PyPDF2
 import re
 import os
 import io
+import os
 
 # im = Image.open('icon.png')
 # st.set_page_config(page_title="SOP Generator", page_icon=im)
 
 if "user_logged_in" not in st.session_state:
     st.session_state.user_logged_in = False
+    try:
+        os.rename(r'lages/2_🔑_Sign_In.py', r'pages/2_🔑_Sign_In.py')
+        os.rename(r'pages/2_🔑_Sign_Out.py', r'lages/2_🔑_Sign_Out.py')
+    except:
+        pass
 
 if "user_id" not in st.session_state:
     st.session_state.user_id = ""
@@ -260,7 +266,7 @@ else:
 
     with col3:
         if st.session_state.section_index in [len(text_areas) - 2, len(text_areas) - 1]:
-            st.session_state.word_limit = st.number_input("Word Limit:", value=800, step=10,max_value=1000,min_value=700)
+            st.session_state.word_limit = st.number_input("Word Limit:", value=800, step=10,max_value=1000,min_value=500)
 
     with col4:
         if state.section_index == len(text_areas) - 1:
@@ -278,7 +284,7 @@ else:
                 "contribution": user_data.get("contribution", [])
             }
             if regenerate:
-                if 700 <= st.session_state.word_limit <= 1100:
+                if 500 <= st.session_state.word_limit <= 1100:
                     with st.status("Regenerating Sop...", expanded=True) as regen_status:
                         st.session_state.generated_sop = ""
                         generated_sop = generate_sop(
@@ -286,19 +292,20 @@ else:
                             **fetched_data,
                             resume_text=st.session_state.summary)
                         st.session_state.generated_sop = generated_sop
-                        st.rerun()
-                        display_sop(generated_sop)
                         user_data = database.get_user_data_by_id(st.session_state.user_id)
                         if 'drafts' in user_data and isinstance(user_data['drafts'], list):
                             # If 'draft' is a list, fetch and append to it
                             existing_draft = user_data['drafts']
                             existing_draft.append(st.session_state.generated_sop)
+                            print(existing_draft)
                         else:
                             # If 'draft' doesn't exist or is not a list, create a new list
                             existing_draft = [st.session_state.generated_sop]
                         # Update the user's draft in the database
                         database.update_user_by_id(st.session_state.user_id, {'drafts': existing_draft})
                         regen_status.update(label="SOP Regenerated", state="complete", expanded=False)
+                        st.rerun()
+                        display_sop(generated_sop)
                 else:
                     st.error("Invalid Word Limit. Your value must be greater than 700 and less than 1100")
 
@@ -338,8 +345,6 @@ else:
                         st.write("SOP Generated Successfully")
                         st.session_state.generated_sop = generated_sop
                         time.sleep(0.2)
-                        st.rerun()
-                        display_sop(st.session_state.generated_sop)
                         user_data = database.get_user_data_by_id(st.session_state.user_id)
                         if 'drafts' in user_data and isinstance(user_data['drafts'], list):
                             # If 'draft' is a list, fetch and append to it
@@ -351,6 +356,8 @@ else:
                         # Update the user's draft in the database
                         database.update_user_by_id(st.session_state.user_id, {'drafts': existing_draft})
                         sop_status.update(label="SOP Generated", state="complete", expanded=False)
+                        st.rerun()
+                        display_sop(st.session_state.generated_sop)
                 else:
                     st.error("Invalid Word Limit. Your value must be greater than 700 and less than 1100")
 
