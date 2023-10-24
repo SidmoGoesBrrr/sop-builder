@@ -15,7 +15,7 @@ import streamlit as st
 #####################################################################################################################################################
 from streamlit.components.v1 import html
 
-@st.cache_data(ttl=1200)
+@st.cache_resource(ttl=1200)
 def get_users_collection():
     users_collection = database.users_collection
     return users_collection
