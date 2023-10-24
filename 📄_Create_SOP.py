@@ -213,7 +213,7 @@ else:
         if st.session_state.summary == "":
             uploaded_file = st.file_uploader("Upload your resume here", type=["pdf"])
             if uploaded_file is not None:
-                with st.status("Summarizing Resume", expanded=True) as status:
+                with st.status("Summarizing Resume With AI", expanded=True) as status:
                     st.write("Parsing the resume...")
                     # Save the uploaded file temporarily with a unique filename
                     temp_file_path = f"temp_resume_{str(st.session_state.user_id)}.pdf"
