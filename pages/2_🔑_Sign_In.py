@@ -2,7 +2,6 @@ import random
 from pymongo import MongoClient
 from datetime import datetime
 from PIL import Image
-from database import *
 import requests
 from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Paragraph
@@ -10,11 +9,16 @@ from reportlab.lib.styles import getSampleStyleSheet
 from io import BytesIO
 import time
 import database
+from database import get_user_data, update_user
 import pytz
-
+import streamlit as st
 #####################################################################################################################################################
 from streamlit.components.v1 import html
 
+@st.cache_data(ttl=1200)
+def get_users_collection():
+    users_collection = database.users_collection
+    return users_collection
 
 def nav_page(page_name, timeout_secs=3):
     nav_script = """
@@ -42,30 +46,9 @@ def nav_page(page_name, timeout_secs=3):
     html(nav_script)
 
 
-def send_otp(phone_no, otp):
-    # url = "http://iqsms.airtel.in/api/v1/send-sms"
-
-    # payload = {
-    #     "customerId": "VIDYALANKA_cNkO5ZBR3WPzYFeg2OgB",
-    #     "destinationAddress": "9321242446",
-    #     "dltTemplateId": "1707169650342929076",
-    #     "entityId": "1201159126160942166",
-    #     "filterBlacklistNumbers": False,
-    #     "message": f"{otp} is your OTP to login to Vidyalankar's AdmitAbroad webapp.",
-    #     "messageType": "SERVICE_IMPLICIT",
-    #     "priority": False,
-    #     "sourceAddress": "IVIDYA",
-
-    # }
-    # headers = {
-    #     "accept": "application/json",
-    #     "content-type": "application/json"
-    # }
-
-    # response = requests.request("POST", url, json=payload, headers=headers)
-    # print(response.text)
+def send_otp():
     pass
-
+    #a function to actually send the otp
 
 # Call the function with the OTP
 im = Image.open('icon.png')
@@ -91,6 +74,7 @@ if st.session_state['button'] == True:
         time.sleep(1)
         st.experimental_rerun()
     else:
+        users_collection = get_users_collection()
         if username in [user['username'] for user in users_collection.find()] and phone_number in [user['phone_number']
                                                                                                    for user in
                                                                                                    users_collection.find()]:

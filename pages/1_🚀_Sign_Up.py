@@ -4,15 +4,21 @@ from pymongo import MongoClient
 from datetime import datetime
 import os
 from PIL import Image
-from database import *
 import requests
 from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Paragraph
 from reportlab.lib.styles import getSampleStyleSheet
+import database
+from database import get_user_data, create_user
 from io import BytesIO
 import time
 from streamlit.components.v1 import html
 
+#get users collection from database
+@st.cache_data(ttl=1200)
+def get_users_collection():
+    users_collection = database.users_collection
+    return users_collection
 #####################################################################################################################################################
 im = Image.open('icon.png')
 st.set_page_config(page_title="SOP Generator", page_icon=im)
@@ -62,7 +68,8 @@ if st.button("Sign Up"):
 
     if name_valid and phone_number_valid:
         user = get_user_data(username)
-        if username in [user['username'] for user in users_collection.find()]:
+        user_coll = get_users_collection()
+        if username in [user['username'] for user in user_coll.find()]:
             st.error("User Already registered. Please Sign In.")
         else:
             create_user(username, email, phone_number)
