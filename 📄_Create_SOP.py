@@ -260,7 +260,7 @@ else:
 
     with col3:
         if st.session_state.section_index in [len(text_areas) - 2, len(text_areas) - 1]:
-            st.markdown("&nbsp;")
+ 
             st.session_state.word_limit = st.number_input("Word Limit:", value=800, step=10)
 
     with col4:
