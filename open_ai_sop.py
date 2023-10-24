@@ -120,6 +120,7 @@ def generate_sop(
     logging.info(f"Instructions tokens used: {num_tokens_from_string(instructions, 'cl100k_base')}")
     logging.info(f"User input tokens used (Excluding resume): {num_tokens_from_string(user_given_string, 'cl100k_base')}")
     sop_content = completion.choices[0]["message"]["content"]
+    logging.info(completion)
     return sop_content
 
 
