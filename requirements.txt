@@ -9,5 +9,5 @@ reportlab
 PyPDF2
 pytz
 tiktoken
-docx
+python-docx
 

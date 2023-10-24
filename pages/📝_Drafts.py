@@ -16,6 +16,9 @@ def display_drafts_page():
         for draft in updated_draft[::-1]:
             st.write(draft)
             st.write("-----------------------------------------------------------------------------------------------")
+    elif updated_draft.strip() == "":
+        st.info("No drafts found!")
+
     else:
         st.info("No drafts found!")
 
