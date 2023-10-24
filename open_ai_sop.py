@@ -8,7 +8,7 @@ import logging
 os.environ['OPENAI_API_KEY'] = st.secrets['api_key']
 openai.api_key = os.environ['OPENAI_API_KEY']
 logging.basicConfig(level=logging.INFO)
-
+finetuned_model=st.secrets['ft_model']
 
 @st.cache_data
 def load_tokens():
@@ -48,7 +48,7 @@ def generate_sop(
         program_benefits,
         contribution,
         resume_text=None,
-        model_name="ft:gpt-3.5-turbo-0613:vidyalankar::8CkpLvJU"
+        model_name=finetuned_model
 ):
     
     if resume_text is None:

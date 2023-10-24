@@ -319,7 +319,7 @@ else:
 
         elif state.section_index == len(text_areas) - 2:
             if st.button("Generate SOP✅", disabled=st.session_state.section_index == len(text_areas)-1):
-                if 700 <= st.session_state.word_limit <= 1100:
+                if 500 <= st.session_state.word_limit <= 1100:
                     with st.status("Generating Sop...", expanded=True) as sop_status:
                         save_to_database(current_section_key, text)
                         user_data = database.get_user_data_by_id(st.session_state.user_id)
