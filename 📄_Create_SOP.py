@@ -13,6 +13,7 @@ import database
 import PyPDF2
 import re
 import os
+import io
 
 # im = Image.open('icon.png')
 # st.set_page_config(page_title="SOP Generator", page_icon=im)
@@ -138,8 +139,6 @@ if 'word_count' not in st.session_state:
 if "generated_sop" not in st.session_state:
     st.session_state.generated_sop = ""
 
-
-
 if "summary" not in st.session_state:
     st.session_state.summary = ""
 
@@ -220,7 +219,7 @@ else:
                     temp_file_path = f"temp_resume_{str(st.session_state.user_id)}.pdf"
                     with open(temp_file_path, "wb") as temp_file:
                         temp_file.write(uploaded_file.getvalue())
-                    # Extract text from the uploaded PDF
+                    # Extract tex   t from the uploaded PDF
                     resume_text = extract_text_from_pdf(temp_file_path)
                     st.write("Summarizing the resume...")
 
@@ -237,7 +236,7 @@ else:
                     status.update(label="Resume Summarized!", state="complete", expanded=False)
 
     with col1:
-        if state.section_index == 0 and state.section_index != len(text_areas) - 1:
+        if state.section_index == 0 :
             st.button("Previous⬅️", disabled=True)
         else:
             if st.button("Previous⬅️"):
@@ -246,18 +245,27 @@ else:
 
     with col2:
         if state.section_index == len(text_areas) - 1:
-            if st.download_button("Download Word File ", st.session_state.generated_sop, "sop.docx",
-                                  mime='application/octet-stream'):
+            import docx
+            doc_download = docx.Document()
+            doc_download.add_paragraph(st.session_state.generated_sop)
+            doc_download.save("sop.docx")
+            bio = io.BytesIO()
+            doc_download.save(bio)
+            if st.download_button(
+                    label="Download Word File ",
+                    data=bio.getvalue(),
+                    file_name="sop.docx",
+                    mime='docx'):
                 st.rerun()
 
     with col3:
         if st.session_state.section_index in [len(text_areas) - 2, len(text_areas) - 1]:
             st.markdown("&nbsp;")
-            st.session_state.word_limit = st.number_input("Word Limit:", min_value=700, max_value=1100, value=800, step=10)
+            st.session_state.word_limit = st.number_input("Word Limit:", value=800, step=10)
 
     with col4:
         if state.section_index == len(text_areas) - 1:
-            regenerate = st.button("Change Word Limit and Regenerate", disabled=st.session_state.generated_sop == "")
+            regenerate = st.button("Try Again")
             user_data = database.get_user_data_by_id(st.session_state.user_id)
             fetched_data = {
                 "program": user_data.get("program", ""),
@@ -270,72 +278,81 @@ else:
                 "program_benefits": user_data.get("program_benefits", []),
                 "contribution": user_data.get("contribution", [])
             }
-
-            # Call the generate_sop function with the required arguments
-            generated_sop = generate_sop(
-                word_limit=st.session_state.word_limit,  # Adjust word limit accordingly
-                **fetched_data  # Unpack the fetched_data dictionary to pass as arguments
-            )
-            display_sop(generated_sop)
-            user_data = database.get_user_data_by_id(st.session_state.user_id)
-            if 'drafts' in user_data and isinstance(user_data['drafts'], list):
-                # If 'draft' is a list, fetch and append to it
-                existing_draft = user_data['drafts']
-                existing_draft.append(st.session_state.generated_sop)
-            else:
-                # If 'draft' doesn't exist or is not a list, create a new list
-                existing_draft = [st.session_state.generated_sop]
-
-            # Update the user's draft in the database
-            database.update_user_by_id(st.session_state.user_id, {'drafts': existing_draft})
             if regenerate:
-                st.session_state.generated_sop = ""
-                generate_sop(st.session_state.word_limit)
-                st.session_state.generated_sop = generated_sop
-                print("Regenerated SOP")
-                display_sop(generated_sop)
-                st.rerun()
-
-            
+                if 700 <= st.session_state.word_limit <= 1100:
+                    with st.status("Regenerating Sop...", expanded=True) as regen_status:
+                        st.session_state.generated_sop = ""
+                        generated_sop = generate_sop(
+                            st.session_state.word_limit,
+                            **fetched_data,
+                            resume_text=st.session_state.summary)
+                        st.session_state.generated_sop = generated_sop
+                        st.rerun()
+                        display_sop(generated_sop)
+                        user_data = database.get_user_data_by_id(st.session_state.user_id)
+                        if 'drafts' in user_data and isinstance(user_data['drafts'], list):
+                            # If 'draft' is a list, fetch and append to it
+                            existing_draft = user_data['drafts']
+                            existing_draft.append(st.session_state.generated_sop)
+                        else:
+                            # If 'draft' doesn't exist or is not a list, create a new list
+                            existing_draft = [st.session_state.generated_sop]
+                        # Update the user's draft in the database
+                        database.update_user_by_id(st.session_state.user_id, {'drafts': existing_draft})
+                        regen_status.update(label="SOP Regenerated", state="complete", expanded=False)
+                else:
+                    st.error("Invalid Word Limit. Your value must be greater than 700 and less than 1100")
 
     with col5:
         if state.section_index == len(text_areas) - 1:
             if st.button("Start Over"):
                 state.section_index = 1
-                st.session_state.summary == ""
+                st.session_state.generated_sop = ""
+                st.session_state.summary = ""
                 st.rerun()
 
         elif state.section_index == len(text_areas) - 2:
-            if st.button("Generate SOP✅", disabled=st.session_state.generated_sop != ""):
-                with st.status("Generating Sop...", expanded=True) as sop_status:
-                    save_to_database(current_section_key, text)
-                    user_data = database.get_user_data_by_id(st.session_state.user_id)
-                    fetched_data = {
-                        "program": user_data.get("program", ""),
-                        "university": user_data.get("university", ""),
-                        "field_interest": user_data.get("field_interest", ""),
-                        "career_goal": user_data.get("career_goal", ""),
-                        "subjects_studied": user_data.get("subjects_studied", []),
-                        "projects_internships": user_data.get("projects_internships", []),
-                        "lacking_skills": user_data.get("lacking_skills", []),
-                        "program_benefits": user_data.get("program_benefits", []),
-                        "contribution": user_data.get("contribution", [])
-                    }
-                    st.write("Sending request to openAI")
-                    state.section_index = min(len(text_areas) - 1, state.section_index + 1)
+            if st.button("Generate SOP✅", disabled=st.session_state.section_index == len(text_areas)-1):
+                if 700 <= st.session_state.word_limit <= 1100:
+                    with st.status("Generating Sop...", expanded=True) as sop_status:
+                        save_to_database(current_section_key, text)
+                        user_data = database.get_user_data_by_id(st.session_state.user_id)
+                        fetched_data = {
+                            "program": user_data.get("program", ""),
+                            "university": user_data.get("university", ""),
+                            "field_interest": user_data.get("field_interest", ""),
+                            "career_goal": user_data.get("career_goal", ""),
+                            "subjects_studied": user_data.get("subjects_studied", []),
+                            "projects_internships": user_data.get("projects_internships", []),
+                            "lacking_skills": user_data.get("lacking_skills", []),
+                            "program_benefits": user_data.get("program_benefits", []),
+                            "contribution": user_data.get("contribution", [])
+                        }
+                        st.write("Sending request to openAI")
+                        state.section_index = min(len(text_areas) - 1, state.section_index + 1)
 
-                    # Call the generate_sop function with the required arguments
-                    generated_sop = generate_sop(
-                        word_limit=st.session_state.word_limit,
-                        resume_text=st.session_state.summary,  # Adjust word limit accordingly
-                        **fetched_data
-                        # Unpack the fetched_data dictionary to pass as arguments
-                    )
-                    st.write("SOP Generated Successfully")
-                    st.session_state.generated_sop = generated_sop
-                    display_sop(st.session_state.generated_sop)
-                    st.rerun()
-                    sop_status.update(label="SOP Generated", state="complete", expanded=False)
+                        # Call the generate_sop function with the required arguments
+                        generated_sop = generate_sop(
+                            word_limit=st.session_state.word_limit,
+                            resume_text=st.session_state.summary,  # Adjust word limit accordingly
+                            **fetched_data)
+                        st.write("SOP Generated Successfully")
+                        st.session_state.generated_sop = generated_sop
+                        st.rerun()
+                        display_sop(st.session_state.generated_sop)
+                        user_data = database.get_user_data_by_id(st.session_state.user_id)
+                        if 'drafts' in user_data and isinstance(user_data['drafts'], list):
+                            # If 'draft' is a list, fetch and append to it
+                            existing_draft = user_data['drafts']
+                            existing_draft.append(st.session_state.generated_sop)
+                        else:
+                            # If 'draft' doesn't exist or is not a list, create a new list
+                            existing_draft = [st.session_state.generated_sop]
+                        # Update the user's draft in the database
+                        database.update_user_by_id(st.session_state.user_id, {'drafts': existing_draft})
+                        sop_status.update(label="SOP Generated", state="complete", expanded=False)
+                else:
+                    st.error("Invalid Word Limit. Your value must be greater than 700 and less than 1100")
 
         else:
             if st.button("Next➡️"):
