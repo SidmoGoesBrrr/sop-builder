@@ -46,7 +46,7 @@ def nav_page(page_name, timeout_secs=3):
     html(nav_script)
 
 
-def send_otp():
+def send_otp(phone_number, generated_otp):
     pass
     #a function to actually send the otp
 
