@@ -85,8 +85,8 @@ def generate_sop(
         ],
     )
     logging.info(f"Model Used: {model_name}")
-    input_string = """{instructions} Here are some sample SOPs you can train yourself on and mimic their style:
-                \n {sample_sops} Write an SOP with a word limit of minimum {word_limit} and maximum 1100
+    input_string = f"""{instructions} 
+                \n  Write an SOP with a word limit of minimum {word_limit} and maximum 1100
                 Here is my information:
                 Program: {program}
                 University: {university}
@@ -112,6 +112,7 @@ def generate_sop(
                 Why this program and University: {program_benefits}       
                 How Can I Contribute: {contribution}      
                 Also, add a conclusion of your own."""
+    
     logging.info(f"Number of total input tokens used: {num_tokens_from_string(input_string, 'cl100k_base')}")
     logging.info(
         f"Number of total output tokens used: {num_tokens_from_string(completion.choices[0]['message']['content'], 'cl100k_base')}")
