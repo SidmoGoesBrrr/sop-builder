@@ -47,8 +47,31 @@ def nav_page(page_name, timeout_secs=3):
 
 
 def send_otp(phone_number, generated_otp):
-    pass
-    #a function to actually send the otp
+    url = 'https://iqsms.airtel.in/api/v1/send-sms'
+    headers = {
+        'Content-Type': 'application/json',
+        'Authorization': st.secrets['sms_auth']
+    }
+
+    data = {
+        "customerId": st.secrets['customerId'],
+        "destinationAddress": f"{str(phone_number)}",
+        "message": f"{str(generated_otp)} is your OTP to login to Vidyalankar's AdmitAbroad webapp.",
+        "sourceAddress": "IVIDYA",
+        "messageType": "SERVICE_EXPLICIT",
+        "dltTemplateId": st.secrets['dltTemplateId'],
+        "entityId": st.secrets['entityId'],
+    }
+
+    response = requests.post(url, headers=headers, json=data)
+
+    if response.status_code == 200:
+        print("Request was successful.")
+        print("Response content:")
+        print(response.text)
+    else:
+        print(f"Request failed with status code {response.status_code}:")
+        print(response.text)
 
 # Call the function with the OTP
 im = Image.open('icon.png')
@@ -82,7 +105,7 @@ if st.session_state['button'] == True:
             generated_otp = str(random.randint(1000, 9999))
             send_otp(phone_number, generated_otp)
             if st.button('Login'):
-                if otp == "1234":
+                if otp == generated_otp:
                     st.success("Logged in Successfully.")
                     st.session_state.user_logged_in = True
                     st.session_state.user_id = str(get_user_data(username)['_id'])
