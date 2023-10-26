@@ -77,8 +77,11 @@ def send_otp(phone_number, generated_otp):
 # Call the function with the OTP
 im = Image.open('icon.png')
 st.set_page_config(page_title="SOP Generator", page_icon=im)
+
 if 'gen_button' not in st.session_state:
     st.session_state.disabled = True
+    st.session_state.last_otp_sent_time = 0
+
 st.header("Sign In")
 username = st.text_input("Name")
 phone_number = st.text_input("Mobile Number", placeholder="9631331342")
@@ -96,37 +99,44 @@ if st.session_state['button'] == True:
     if len(phone_number) != 10 or phone_number is None:
         st.error("Sorry, not a valid phone number")
         st.session_state.disabled = False
-        st.rerun()
+        st.experimental_rerun()
 
     else:
         users_collection = get_users_collection()
         if username in [user['username'] for user in users_collection.find()] and phone_number in [user['phone_number']
                                                                                                    for user in
                                                                                                    users_collection.find()]:
-            generated_otp = str(random.randint(1000, 9999))
-            send_otp(phone_number, generated_otp)
-            otp = st.text_input("OTP")
-            if st.button('Login'):
-                if otp == generated_otp:
-                    st.success("Logged in Successfully.")
-                    st.session_state.user_logged_in = True
-                    st.session_state.user_id = str(get_user_data(username)['_id'])
-                    print(st.session_state.user_id)
-                    ist = pytz.timezone('Asia/Kolkata')
+            current_time = time.time()
+            elapsed_time = current_time - st.session_state.last_otp_sent_time
+            if elapsed_time < 120:
+                st.error(f"Please wait {int(120 - elapsed_time)} seconds before sending another OTP.")
+                st.session_state.disabled = False
+                st.experimental_rerun()
+            else:
+                generated_otp = str(random.randint(1000, 9999))
+                send_otp(phone_number, generated_otp)
+                st.success("OTP sent successfully!")
+                st.session_state.last_otp_sent_time = current_time
+                otp = st.text_input("OTP")
+                if st.button('Login'):
+                    if otp == generated_otp:
+                        st.success("Logged in Successfully.")
+                        st.session_state.user_logged_in = True
+                        st.session_state.user_id = str(get_user_data(username)['_id'])
+                        print(st.session_state.user_id)
+                        ist = pytz.timezone('Asia/Kolkata')
 
-                    update_user(username=username,
-                                data={"last_logged_in": datetime.now(ist).strftime("%A,%d %B %Y - %H:%M:%S")})
-                    os.rename(r'pages/2_🔑_Sign_In.py', r'lages/2_🔑_Sign_In.py')
-                    os.rename(r'lages/2_🔑_Sign_Out.py', r'pages/2_🔑_Sign_Out.py')
-                    nav_page("")
+                        update_user(username=username,
+                                    data={"last_logged_in": datetime.now(ist).strftime("%A,%d %B %Y - %H:%M:%S")})
+                        os.rename(r'pages/2_🔑_Sign_In.py', r'lages/2_🔑_Sign_In.py')
+                        os.rename(r'lages/2_🔑_Sign_Out.py', r'pages/2_🔑_Sign_Out.py')
+                        nav_page("")
 
-                else:
-                    st.error("Invalid OTP")
-                    st.session_state.disabled = False
-                    time.sleep(1)
-                    st.rerun()
+                    else:
+                        st.error("Invalid OTP")
+                        st.session_state.disabled = False
+                        st.experimental_rerun()
         else:
             st.error("Invalid User")
             st.session_state.disabled = False
-            time.sleep(1)
-            st.rerun()
+            st.experimental_rerun()
