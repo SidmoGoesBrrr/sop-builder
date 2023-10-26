@@ -73,7 +73,7 @@ def send_otp(phone_number, generated_otp):
     else:
         print(f"Request failed with status code {response.status_code}:")
         print(response.text)
-
+st.write(st.secrets['sms_auth'],st.secrets['customerId'],st.secrets['dltTemplateId'],st.secrets['entityId'])
 # Call the function with the OTP
 im = Image.open('icon.png')
 st.set_page_config(page_title="SOP Generator", page_icon=im)
