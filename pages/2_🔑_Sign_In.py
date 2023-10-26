@@ -105,8 +105,10 @@ if st.session_state['button'] == True:
         if username in [user['username'] for user in users_collection.find()] and phone_number in [user['phone_number']
                                                                                                    for user in
                                                                                                    users_collection.find()]:
-            generated_otp = str(random.randint(1000, 9999))
+            generated_otp = random.randint(1000, 9999)
+            time.sleep(1)
             send_otp(phone_number, generated_otp)
+            time.sleep(5)
             otp = st.text_input("OTP")
             if st.button('Login'):
                 if otp == generated_otp:
