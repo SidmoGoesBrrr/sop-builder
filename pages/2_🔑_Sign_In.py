@@ -127,7 +127,7 @@ if generate_otp:
 
             st.write(send_otp(phone_number, gen_otp))
             st.info("Sending OTP...")
-            time.sleep(5)
+
             st.success("OTP sent successfully")
             
             st.session_state.login_button = False
