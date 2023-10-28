@@ -18,14 +18,16 @@ def display_drafts_page():
     try:
         user_data = database.get_user_data_by_id(user_id)
         drafts = user_data.get('drafts', [])
-        col1, col2 = st.columns([5, 1])
+        col1, col3 = st.columns([1, 3])
         if drafts:
             with col1:
                 st.dataframe(drafts_to_table(drafts))
-            with col2:
-                draft_id = st.selectbox("Select a draft to view", [str(i) for i in range(len(drafts))])
-                if draft_id:
-                    view_individual_draft(draft_id)
+            with col3:
+                draft_id = st.selectbox("Select a draft to view", ["-",str(i) for i in range(len(drafts))])
+
+            if draft_id!="-":
+                view_individual_draft(draft_id)
+                
         else:
             st.info("No drafts found!")
     except Exception as e:
@@ -34,7 +36,7 @@ def display_drafts_page():
 def view_individual_draft(draft_id):
     try:
         draft = database.get_user_data_by_id(st.session_state.user_id)['drafts'][int(draft_id)]['content']
-        st.header(f"Draft {draft_id}")
+        st.header(f"Draft {draft_id+1}")
         st.subheader("Here is your draft:")
         st.write(draft)
 

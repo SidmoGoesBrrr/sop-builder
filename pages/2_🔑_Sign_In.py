@@ -126,8 +126,6 @@ if generate_otp:
             logging.info(f"Calling the OTP function now")
 
             st.write(send_otp(phone_number, gen_otp))
-            st.info("Sending OTP...")
-
             st.success("OTP sent successfully")
             
             st.session_state.login_button = False
