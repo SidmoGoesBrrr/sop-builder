@@ -29,13 +29,14 @@ def display_drafts_page():
 def drafts_to_table(drafts):
     # Create a table from the list of drafts
     logging.info(f"Drafts: {drafts}")
+    user_data = database.get_user_data_by_id(st.session_state.user_id)
     table_data = []
     for draft in drafts:
-        university_name = draft.get('University Name', 'N/A')
-        program_name = draft.get('Program Name', 'N/A')
-        date_of_draft = draft.get('Date of Draft', 'N/A')
-        time_stamp = draft.get('Time Stamp', 'N/A')
-        table_data.append([university_name, program_name, date_of_draft, time_stamp, st.button("View Draft",key=draft.get('_id'))])
+        university_name = draft.get('University Name', user_data['university'])
+        program_name = draft.get('Program Name', user_data['program']) #Saturday,28 October 2023 - 20:33:59
+        date_of_draft = draft.get('Date of Draft', draft['timestamp'].split('-')[0])
+        time_stamp = draft.get('Time', draft['timestamp'].split('-')[1])
+        table_data.append([university_name, program_name, date_of_draft, time_stamp, st.button("View Draft",key=drafts.index(draft))])
 
     # Define column names for the table
     columns = ["University Name", "Program Name", "Date of Draft", "Time Stamp", "View Draft"]
