@@ -20,9 +20,19 @@ def display_drafts_page():
         drafts = user_data.get('drafts', [])
 
         if drafts:
-            st.table(drafts_to_table(drafts))
+            st.dataframe(drafts_to_table(drafts))
         else:
             st.info("No drafts found!")
+    except Exception as e:
+        st.error(f"An error occurred: {str(e)}")
+
+def view_individual_draft(draft_id):
+    try:
+        draft = database.get_user_data_by_id(st.session_state.user_id)['drafts'][int(draft_id)]['content']
+        st.header(f"Draft {draft_id}")
+        st.subheader("Here is your draft:")
+        st.write(draft)
+
     except Exception as e:
         st.error(f"An error occurred: {str(e)}")
 
@@ -36,7 +46,9 @@ def drafts_to_table(drafts):
         program_name = draft.get('Program Name', user_data['program']) #Saturday,28 October 2023 - 20:33:59
         date_of_draft = draft.get('Date of Draft', draft['timestamp'].split('-')[0])
         time_stamp = draft.get('Time', draft['timestamp'].split('-')[1])
-        table_data.append([university_name, program_name, date_of_draft, time_stamp, st.button("View Draft",key=drafts.index(draft))])
+        logging.info(drafts.index(draft))
+        view_link = f"/viewdraft/{drafts.index(draft)}"
+        table_data.append([university_name, program_name, date_of_draft, time_stamp, view_link])
 
     # Define column names for the table
     columns = ["University Name", "Program Name", "Date of Draft", "Time Stamp", "View Draft"]
@@ -45,6 +57,10 @@ def drafts_to_table(drafts):
 
 # Check if the user is logged in and display drafts if logged in
 if st.session_state.get("user_logged_in") == True:
-    display_drafts_page()
+    if st.url.startswith("/viewdraft/"):
+        draft_id = st.url.split("/viewdraft/")[1]
+        view_individual_draft(draft_id)
+    else:
+        display_drafts_page()
 else:
     st.error("⚠️ You need to log in to access this feature. Please log in. ⚠️")
