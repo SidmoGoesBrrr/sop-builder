@@ -15,9 +15,7 @@ st.markdown("""
 table td:nth-child(1) {
     display: none
 }
-table th:nth-child(1) {
-    display: none
-}
+
 </style>
 """, unsafe_allow_html=True)
 # Define a function to display drafts in a table
@@ -28,7 +26,7 @@ def display_drafts_page():
         user_data = database.get_user_data_by_id(user_id)
         drafts = user_data.get('drafts', [])
         if drafts:
-            st.table(drafts_to_table(drafts))
+            st.dataframe(drafts_to_table(drafts))
             options_list=["-"]
             options_list.append(i for i in range(len(drafts)))
             draft_id = st.selectbox("Select a draft to view", options_list)
