@@ -41,7 +41,7 @@ if st.button('Sign Out'):
     time.sleep(2)
     os.rename(r'pages/2_🔑_Sign_Out.py', r'lages/2_🔑_Sign_Out.py')
     os.rename(r'lages/2_🔑_Sign_In.py', r'pages/2_🔑_Sign_In.py')
-    st.session_state.disabled = False
+    st.session_state.disabled = True
     st.session_state['button'] = False
     for i in st.session_state:
         if i != 'button' and i != 'disabled' and i != 'user_logged_in' and i != 'user_id':
