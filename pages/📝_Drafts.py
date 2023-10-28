@@ -20,7 +20,7 @@ def display_drafts_page():
         drafts = user_data.get('drafts', [])
         if drafts:
             st.table(drafts_to_table(drafts))
-            draft_id = st.selectbox("Select a draft to view", ["-",[str(i) for i in range(len(drafts))]])
+            draft_id = st.selectbox("Select a draft to view", ["-",str(i) for i in range(len(drafts))])
             if draft_id!="-":
                 view_individual_draft(draft_id)
         else:
@@ -51,7 +51,7 @@ def drafts_to_table(drafts):
         table_data.append([university_name, program_name, date_of_draft, time_stamp])
 
     # Define column names for the table
-    columns = ["University Name", "Program Name", "Date of Draft", "Time Stamp", "View Draft"]
+    columns = ["University Name", "Program Name", "Date of Draft", "Time Stamp"]
 
     return [columns] + table_data
 
