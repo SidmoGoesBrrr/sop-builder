@@ -19,7 +19,7 @@ def display_drafts_page():
         user_data = database.get_user_data_by_id(user_id)
         drafts = user_data.get('drafts', [])
         if drafts:
-            st.dataframe(drafts_to_table(drafts),width=1000,index=True)
+            st.dataframe(drafts_to_table(drafts),width=1000)
             options_list=["-"]
             num_options=[i for i in range(len(drafts))]
             for num in num_options:  
