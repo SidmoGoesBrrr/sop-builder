@@ -16,8 +16,6 @@ import os
 import io
 import os
 
-im = Image.open('icon.png')
-st.set_page_config(page_title="SOP Generator", page_icon=im)
 
 # im = Image.open('icon.png')
 # st.set_page_config(page_title="SOP Generator", page_icon=im)
