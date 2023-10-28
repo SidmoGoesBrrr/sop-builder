@@ -57,7 +57,7 @@ def drafts_to_table(drafts):
 
 # Check if the user is logged in and display drafts if logged in
 if st.session_state.get("user_logged_in") == True:
-    if st.url.startswith("/viewdraft/"):
+    if st.experimental_get_query_params.startswith("/viewdraft/"):
         draft_id = st.url.split("/viewdraft/")[1]
         view_individual_draft(draft_id)
     else:
