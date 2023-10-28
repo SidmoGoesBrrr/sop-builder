@@ -50,37 +50,44 @@ def nav_page(page_name, timeout_secs=3):
 
 
 def send_otp(phone_number, generated_otp):
-    url = 'https://iqsms.airtel.in/api/v1/send-sms'
-    headers = {
-        'Content-Type': 'application/json',
-        'Authorization': st.secrets["sms_auth"],
-    }
+    # url = 'https://iqsms.airtel.in/api/v1/send-sms'
+    # headers = {
+    #     'Content-Type': 'application/json',
+    #     'Authorization': st.secrets["sms_auth"],
+    # }
 
+    # data = {
+    #     "customerId": str(st.secrets["customerId"]),
+    #     "destinationAddress": f"{str(phone_number)}",
+    #     "message": f"{str(generated_otp)} is your OTP to login to Vidyalankar's AdmitAbroad webapp.",
+    #     "sourceAddress": "IVIDYA",
+    #     "messageType": "SERVICE_EXPLICIT",
+    #     "dltTemplateId": str(st.secrets["dltTemplateId"]),
+    #     "entityId": str(st.secrets["entityId"])
+    # }
+    # logging.info(f"Sending {generated_otp} to {phone_number}")
+    # logging.info(f"Data: {data}")
+    # logging.info(f"Headers: {headers}")
+    # response = requests.post(url, headers=headers, json=data)
+    # logging.info(response.text)
+    # if response.status_code == 200:
+    #     print("Request was successful.")
+    #     print("Response content:")
+    #     print(response.text)
+    #     logging.info(response.text)
+    # else:
+    #     print(f"Request failed with status code {response.status_code}:")
+    #     print(response.text)
+    #     logging.error(response.text)
+    # return response
+    #sends post request to the url https://reqres.in/api/users with phone number and otp as parameters
+    url = 'https://reqres.in/api/users'
     data = {
-        "customerId": str(st.secrets["customerId"]),
-        "destinationAddress": f"{str(phone_number)}",
-        "message": f"{str(generated_otp)} is your OTP to login to Vidyalankar's AdmitAbroad webapp.",
-        "sourceAddress": "IVIDYA",
-        "messageType": "SERVICE_EXPLICIT",
-        "dltTemplateId": str(st.secrets["dltTemplateId"]),
-        "entityId": str(st.secrets["entityId"])
+        "phone_number": phone_number,
+        "otp": generated_otp
     }
-    logging.info(f"Sending {generated_otp} to {phone_number}")
-    logging.info(f"Data: {data}")
-    logging.info(f"Headers: {headers}")
-    response = requests.post(url, headers=headers, json=data)
+    response = requests.post(url, data=data)
     logging.info(response.text)
-    if response.status_code == 200:
-        print("Request was successful.")
-        print("Response content:")
-        print(response.text)
-        logging.info(response.text)
-    else:
-        print(f"Request failed with status code {response.status_code}:")
-        print(response.text)
-        logging.error(response.text)
-    return response
-
 # Call the function with the OTP
 im = Image.open('icon.png')
 
