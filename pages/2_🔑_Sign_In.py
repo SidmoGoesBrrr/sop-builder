@@ -75,6 +75,7 @@ def send_otp(phone_number, generated_otp):
         print(f"Request failed with status code {response.status_code}:")
         print(response.text)
 
+    return response
 
 # Call the function with the OTP
 im = Image.open('icon.png')
@@ -85,6 +86,7 @@ if 'gen_button' not in st.session_state:
     st.session_state.disabled = True
 if 'login_button' not in st.session_state:
     st.session_state.login_button = True
+    
 st.header("Sign In")
 username = st.text_input("Name")
 phone_number = st.text_input("Mobile Number", placeholder="9631331342")
