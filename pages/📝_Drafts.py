@@ -10,14 +10,7 @@ im = Image.open('icon.png')
 
 # Set Streamlit page configuration
 st.set_page_config(page_title="SOP Generator", page_icon=im)
-st.markdown("""
-<style>
-table td:nth-child(1) {
-    display: none
-}
 
-</style>
-""", unsafe_allow_html=True)
 # Define a function to display drafts in a table
 def display_drafts_page():
     st.header("Drafts")
@@ -28,7 +21,7 @@ def display_drafts_page():
         if drafts:
             st.dataframe(drafts_to_table(drafts))
             options_list=["-"]
-            options_list.append(i for i in range(len(drafts)))
+            options_list.append([i for i in range(len(drafts))])
             draft_id = st.selectbox("Select a draft to view", options_list)
             if draft_id!="-":
                 view_individual_draft(draft_id)
