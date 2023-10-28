@@ -2,7 +2,10 @@ import streamlit as st
 from pymongo import MongoClient
 import time
 import database
+from PIL import Image
+im = Image.open('icon.png')
 
+st.set_page_config(page_title="SOP Generator", page_icon=im)
 
 def display_drafts_page():
     st.header("Drafts")
