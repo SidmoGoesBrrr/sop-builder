@@ -37,8 +37,10 @@ def view_individual_draft(draft_id):
         draft = database.get_user_data_by_id(st.session_state.user_id)['drafts'][int(draft_id-1)]['content']
         st.header(f"Draft {draft_id}")
         st.subheader("Here is your draft:")
+        #draw a divider
+        st.markdown("---")
         st.write(draft)
-
+        st.markdown("---")
     except Exception as e:
         st.error(f"An error occurred: {str(e)}")
 
