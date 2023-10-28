@@ -29,7 +29,9 @@ def display_drafts_page():
         drafts = user_data.get('drafts', [])
         if drafts:
             st.table(drafts_to_table(drafts))
-            draft_id = st.selectbox("Select a draft to view", ["-",str(i) for i in range(len(drafts))])
+            options_list=["-"]
+            options_list.append(i for i in range(len(drafts)))
+            draft_id = st.selectbox("Select a draft to view", options_list)
             if draft_id!="-":
                 view_individual_draft(draft_id)
         else:
