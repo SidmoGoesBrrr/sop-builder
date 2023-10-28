@@ -118,24 +118,26 @@ if generate_otp:
         if username in [user['username'] for user in users_collection.find()] and phone_number in [user['phone_number']
                                                                                                    for user in
                                                                                                    users_collection.find()]:
-            otp = random.randint(1000, 9999)
-            logging.info(f"Generated OTP: {otp}")
-            time.sleep(1)
+            gen_otp = random.randint(1000, 9999)
+            logging.info(f"Generated OTP: {gen_otp}")
             logging.info(f"Calling the OTP function now")
-            send_otp(phone_number, otp)
+
+            send_otp(phone_number, gen_otp)
+            st.info("Sending OTP...")
             time.sleep(5)
             st.success("OTP sent successfully")
             st.session_state.login_button = False
+            st.session_state.generated_otp = gen_otp
         else:
             st.error("Invalid User")
             st.session_state.disabled = False
             time.sleep(1)
 
 if not st.session_state.login_button:
-    otp = st.text_input("Enter OTP", key='otp')
+    otp_input = st.text_input("Enter OTP", key='otp')
     if st.button('Login'):
-        print(otp, st.session_state.generated_otp)
-        if otp == str(st.session_state.generated_otp):
+        print(otp_input, st.session_state.generated_otp)
+        if otp_input == str(st.session_state.generated_otp):
             st.success("Logged in Successfully.")
             st.session_state.user_logged_in = True
             st.session_state.user_id = str(get_user_data(username)['_id'])
