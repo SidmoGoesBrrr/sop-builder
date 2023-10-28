@@ -23,7 +23,7 @@ def display_drafts_page():
             with col1:
                 st.dataframe(drafts_to_table(drafts))
             with col3:
-                draft_id = st.selectbox("Select a draft to view", ["-",str(i) for i in range(len(drafts))])
+                draft_id = st.selectbox("Select a draft to view", ["-"+str(i) for i in range(len(drafts))])
 
             if draft_id!="-":
                 view_individual_draft(draft_id)
