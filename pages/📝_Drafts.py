@@ -18,9 +18,14 @@ def display_drafts_page():
     try:
         user_data = database.get_user_data_by_id(user_id)
         drafts = user_data.get('drafts', [])
-
+        col1, col2 = st.columns([5, 1])
         if drafts:
-            st.dataframe(drafts_to_table(drafts))
+            with col1:
+                st.dataframe(drafts_to_table(drafts))
+            with col2:
+                draft_id = st.selectbox("Select a draft to view", [str(i) for i in range(len(drafts))])
+                if draft_id:
+                    view_individual_draft(draft_id)
         else:
             st.info("No drafts found!")
     except Exception as e:
@@ -46,9 +51,7 @@ def drafts_to_table(drafts):
         program_name = draft.get('Program Name', user_data['program']) #Saturday,28 October 2023 - 20:33:59
         date_of_draft = draft.get('Date of Draft', draft['timestamp'].split('-')[0])
         time_stamp = draft.get('Time', draft['timestamp'].split('-')[1])
-        logging.info(drafts.index(draft))
-        view_link = f"/viewdraft/{drafts.index(draft)}"
-        table_data.append([university_name, program_name, date_of_draft, time_stamp, view_link])
+        table_data.append([university_name, program_name, date_of_draft, time_stamp])
 
     # Define column names for the table
     columns = ["University Name", "Program Name", "Date of Draft", "Time Stamp", "View Draft"]
