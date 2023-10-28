@@ -65,7 +65,7 @@ def drafts_to_table(drafts):
         program_name = draft.get('Program Name', 'N/A')
         date_of_draft = draft.get('Date of Draft', 'N/A')
         time_stamp = draft.get('Time Stamp', 'N/A')
-        view_draft_link = draft.get('View Draft', 'N/A')
+        view_draft_link = st.button("View Draft")
         table_data.append([university_name, program_name, date_of_draft, time_stamp, view_draft_link])
 
     # Define column names for the table
