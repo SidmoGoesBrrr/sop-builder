@@ -15,7 +15,7 @@ import re
 import os
 import io
 import os
-import datetime
+from datetime import datetime
 import pytz
 # im = Image.open('icon.png')
 # st.set_page_config(page_title="SOP Generator", page_icon=im)
@@ -375,13 +375,17 @@ else:
                         st.session_state.generated_sop = generated_sop
                         time.sleep(0.2)
                         user_data = database.get_user_data_by_id(st.session_state.user_id)
+                        ist = pytz.timezone('Asia/Kolkata')
+                        current_timestamp=datetime.now(ist).strftime("%A,%d %B %Y - %H:%M:%S")
                         if 'drafts' in user_data and isinstance(user_data['drafts'], list):
                             # If 'draft' is a list, fetch and append to it
+                            
                             existing_draft = user_data['drafts']
-                            existing_draft.append(st.session_state.generated_sop)
+                            existing_draft.append({'content': st.session_state.generated_sop, 'timestamp': current_timestamp})
+                            print(existing_draft)
                         else:
                             # If 'draft' doesn't exist or is not a list, create a new list
-                            existing_draft = [st.session_state.generated_sop]
+                            existing_draft = [{'content': st.session_state.generated_sop, 'timestamp': current_timestamp}]
                         # Update the user's draft in the database
                         database.update_user_by_id(st.session_state.user_id, {'drafts': existing_draft})
                         sop_status.update(label="SOP Generated", state="complete", expanded=False)

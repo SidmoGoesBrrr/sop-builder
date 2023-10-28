@@ -74,7 +74,7 @@ def drafts_to_table(drafts):
     return [columns] + table_data
 
 # Check if the user is logged in and display drafts if logged in
-if st.session_state["user_logged_in"] == True:
+if st.session_state.get("user_logged_in") == True:
     display_drafts_page()
 else:
     st.error("⚠️ You need to log in to access this feature. Please log in. ⚠️")
