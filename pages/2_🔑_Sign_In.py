@@ -57,13 +57,13 @@ def send_otp(phone_number, generated_otp):
     }
 
     data = {
-        "customerId": st.secrets["customerId"],
+        "customerId": str(st.secrets["customerId"]),
         "destinationAddress": f"{str(phone_number)}",
         "message": f"{str(generated_otp)} is your OTP to login to Vidyalankar's AdmitAbroad webapp.",
         "sourceAddress": "IVIDYA",
         "messageType": "SERVICE_EXPLICIT",
-        "dltTemplateId": st.secrets["dltTemplateId"],
-        "entityId": st.secrets["entityId"]
+        "dltTemplateId": str(st.secrets["dltTemplateId"]),
+        "entityId": str(st.secrets["entityId"])
     }
     logging.info(f"Sending {generated_otp} to {phone_number}")
     response = requests.post(url, headers=headers, json=data)
