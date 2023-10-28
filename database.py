@@ -26,16 +26,10 @@ user_schema = {
     "program_benefits": "",
     "contribution": "",
     "conclusion": "",
+    "SOP_CREDITS": 0,
     "drafts": []
 }
 
-# Login Schema
-login_schema = {
-    "name": "",
-    "email": "",
-    "mobile_number": "",
-    "otp": "",
-}
 
 # Functions for CRUD operations for users
 
@@ -78,22 +72,3 @@ def delete_user_by_id(id):
     result = users_collection.delete_one({"_id": objInstance})
     return result.deleted_count
 # Functions for CRUD operations for login
-
-def create_login(name, email, mobile_number, otp):
-    login_data = login_schema.copy()
-    login_data["name"] = name
-    login_data["email"] = email
-    login_data["mobile_number"] = mobile_number
-    login_data["otp"] = otp
-    result = login_collection.insert_one(login_data)
-    return result.inserted_id
-
-def get_login_data(mobile_number):
-    return login_collection.find_one({"mobile_number": mobile_number})
-
-def update_login(mobile_number, data):
-    login_collection.update_one({"mobile_number": mobile_number}, {"$set": data})
-
-def delete_login(mobile_number):
-    result = login_collection.delete_one({"mobile_number": mobile_number})
-    return result.deleted_count

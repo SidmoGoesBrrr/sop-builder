@@ -14,6 +14,7 @@ import pytz
 import streamlit as st
 import os
 from streamlit.components.v1 import html
+import logging
 
 
 @st.cache_resource(ttl=1200)
@@ -64,17 +65,18 @@ def send_otp(phone_number, generated_otp):
         "dltTemplateId": st.secrets["dltTemplateId"],
         "entityId": st.secrets["entityId"]
     }
-
+    logging.info(f"Sending {generated_otp} to {phone_number}")
     response = requests.post(url, headers=headers, json=data)
-
+    logging.info(response.text)
     if response.status_code == 200:
         print("Request was successful.")
         print("Response content:")
         print(response.text)
+        logging.info(response.text)
     else:
         print(f"Request failed with status code {response.status_code}:")
         print(response.text)
-
+        logging.error(response.text)
     return response
 
 # Call the function with the OTP
@@ -84,6 +86,7 @@ st.set_page_config(page_title="SOP Generator", page_icon=im)
 
 if 'gen_button' not in st.session_state:
     st.session_state.disabled = True
+
 if 'login_button' not in st.session_state:
     st.session_state.login_button = True
     
@@ -106,9 +109,11 @@ if generate_otp:
         if username in [user['username'] for user in users_collection.find()] and phone_number in [user['phone_number']
                                                                                                    for user in
                                                                                                    users_collection.find()]:
-            st.session_state.generated_otp = random.randint(1000, 9999)
+            otp = random.randint(1000, 9999)
+            logging.info(f"Generated OTP: {otp}")
             time.sleep(1)
-            send_otp(phone_number, st.session_state.generated_otp)
+            logging.info(f"Calling the OTP function now")
+            send_otp(phone_number, otp)
             time.sleep(5)
             st.success("OTP sent successfully")
             st.session_state.login_button = False
