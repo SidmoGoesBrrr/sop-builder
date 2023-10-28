@@ -19,11 +19,11 @@ def display_drafts_page():
         user_data = database.get_user_data_by_id(user_id)
         drafts = user_data.get('drafts', [])
         if drafts:
-            st.dataframe(drafts_to_table(drafts),width=800, height=500)
+            st.dataframe(drafts_to_table(drafts),width=1000,index=True)
             options_list=["-"]
             num_options=[i for i in range(len(drafts))]
             for num in num_options:  
-                options_list.append(num)
+                options_list.append(num+1)
             draft_id = st.selectbox("Select a draft to view", options_list)
             if draft_id!="-":
                 view_individual_draft(draft_id)
@@ -34,7 +34,7 @@ def display_drafts_page():
 
 def view_individual_draft(draft_id):
     try:
-        draft = database.get_user_data_by_id(st.session_state.user_id)['drafts'][int(draft_id)]['content']
+        draft = database.get_user_data_by_id(st.session_state.user_id)['drafts'][int(draft_id-1)]['content']
         st.header(f"Draft {draft_id}")
         st.subheader("Here is your draft:")
         st.write(draft)
