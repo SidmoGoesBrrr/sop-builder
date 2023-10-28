@@ -66,6 +66,8 @@ def send_otp(phone_number, generated_otp):
         "entityId": str(st.secrets["entityId"])
     }
     logging.info(f"Sending {generated_otp} to {phone_number}")
+    logging.info(f"Data: {data}")
+    logging.info(f"Headers: {headers}")
     response = requests.post(url, headers=headers, json=data)
     logging.info(response.text)
     if response.status_code == 200:
