@@ -10,7 +10,16 @@ im = Image.open('icon.png')
 
 # Set Streamlit page configuration
 st.set_page_config(page_title="SOP Generator", page_icon=im)
-
+st.markdown("""
+<style>
+table td:nth-child(1) {
+    display: none
+}
+table th:nth-child(1) {
+    display: none
+}
+</style>
+""", unsafe_allow_html=True)
 # Define a function to display drafts in a table
 def display_drafts_page():
     st.header("Drafts")
