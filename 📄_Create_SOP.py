@@ -23,7 +23,9 @@ hide_streamlit_style = """
             <style>
             #MainMenu {visibility: hidden;}
             footer {visibility: hidden;}
+            #GithubIcon {visibility: hidden;}
             </style>
+            
             """
 
 im = Image.open('icon.png')
