@@ -16,7 +16,13 @@ import os
 from streamlit.components.v1 import html
 import logging
 
-
+hide_streamlit_style = """
+            <style>
+            #MainMenu {visibility: hidden;}
+            footer {visibility: hidden;}
+            </style>
+            """
+st.markdown(hide_streamlit_style, unsafe_allow_html=True) 
 @st.cache_resource(ttl=1200)
 def get_users_collection():
     users_collection = database.users_collection
@@ -157,3 +163,4 @@ if not st.session_state.login_button:
             st.error("Invalid OTP")
             st.session_state.disabled = False
             time.sleep(1)
+    
