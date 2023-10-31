@@ -17,6 +17,8 @@ import io
 import os
 from datetime import datetime
 import pytz
+from streamlit_star_rating import st_star_rating
+
 im = Image.open('icon.png')
 st.set_page_config(page_title="SOP Generator", page_icon=im)
 
@@ -26,7 +28,6 @@ hide_streamlit_style = """
             footer {visibility: hidden;}
             #GithubIcon {visibility: hidden;}
             </style>
-            
             """
 st.markdown(
     """
@@ -36,12 +37,18 @@ st.markdown(
     .viewerBadge_text__1JaDK {
         display: none;
     }
+    button {
+        height: 60px !important;
+    }
+    input {
+        height: 30px !important;
+    }
     </style>
     """,
     unsafe_allow_html=True
 )
 
-st.markdown(hide_streamlit_style, unsafe_allow_html=True) 
+st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 if "user_logged_in" not in st.session_state:
     st.session_state.user_logged_in = False
     try:
@@ -76,6 +83,11 @@ def display_sop(text):
     banner.text(text)
 
 
+def rating():
+    st.write("Rate this SOP before using other buttons")
+    return st_star_rating(label="Rate this SOP", maxValue=5, defaultValue=0, key="rating")
+
+
 # Function to display success banner
 def show_success_banner():
     banner.success("Text saved successfully!")
@@ -87,8 +99,8 @@ def check_if_program_length_okay(text):
 
 
 def error_msg(question):
-    if current_section['question'] == "Which university is this SOP for?" or current_section[
-        'question'] == "Which program is this SOP for?":
+    if current_section['question'] == "Which university is this SOP for?" or \
+            current_section['question'] == "Which program is this SOP for?":
         banner.error("Please do not leave this field blank")
     else:
         banner.error("Please enter 50 words or more")
@@ -190,9 +202,13 @@ if "summary" not in st.session_state:
 if "word_limit" not in st.session_state:
     st.session_state.word_limit = 0
 
+if "rating_given" not in st.session_state:
+    st.session_state.rating_given = 0
+
 # Streamlit app
-st.markdown(f"<h1 style='text-align: center;'>{text_areas[list(text_areas.keys())[state.section_index]]['heading']}</h1>",
-            unsafe_allow_html=True)
+st.markdown(
+    f"<h1 style='text-align: center;'>{text_areas[list(text_areas.keys())[state.section_index]]['heading']}</h1>",
+    unsafe_allow_html=True)
 st.markdown(
     "<h6 style='text-align: center;'>Answer in a minimum of 50 words and a maximum of 200 words.</h6>",
     unsafe_allow_html=True)
@@ -232,6 +248,7 @@ if st.session_state.section_index == 0:
         if st.button("Next➡️"):
             st.session_state.section_index += 1
             st.rerun()
+            st.rerun()
     else:
         st.error("Please login to continue")
 else:
@@ -258,10 +275,30 @@ else:
 
     # Navigation buttons
     sop_display_area = st.empty()
+    st.markdown("""<hr> """, unsafe_allow_html=True)
     col1, col2, col3, col4, col5 = st.columns(5)
     banner = st.empty()
     if state.section_index == len(text_areas) - 1:
         sop_display_area.write(str(st.session_state.generated_sop))
+        if st.session_state.rating_given == 0:
+            st.session_state.rating_given = rating()
+            user_data = database.get_user_data_by_id(st.session_state.user_id)
+            ist = pytz.timezone('Asia/Kolkata')
+            current_timestamp = datetime.now(ist).strftime("%A,%d %B %Y - %H:%M:%S")
+            if 'drafts' in user_data and isinstance(user_data['drafts'], list):
+                # If 'draft' is a list, fetch and append to it
+                existing_draft = user_data['drafts']
+                existing_draft.append(
+                    {'content': st.session_state.generated_sop, 'timestamp': current_timestamp,
+                     'rating': st.session_state.rating_given})
+            else:
+                # If 'draft' doesn't exist or is not a list, create a new list
+                existing_draft = [
+                    {'content': st.session_state.generated_sop, 'timestamp': current_timestamp,
+                     'rating': st.session_state.rating_given}]
+            # Update the user's draft in the database
+            database.update_user_by_id(st.session_state.user_id, {'drafts': existing_draft})
+            st.rerun()
 
     if state.section_index == len(text_areas) - 5:
         if st.session_state.summary == "":
@@ -290,8 +327,12 @@ else:
                     status.update(label="Resume Summarized!", state="complete", expanded=False)
 
     with col1:
-        if state.section_index == 0 :
+        if state.section_index == 0:
             st.button("⬅️Previous", disabled=True)
+        elif state.section_index == len(text_areas) - 1:
+            if st.button("⬅️Previous", disabled=not st.session_state.rating_given):
+                state.section_index = max(0, state.section_index - 1)
+                st.rerun()
         else:
             if st.button("⬅️Previous"):
                 state.section_index = max(0, state.section_index - 1)
@@ -309,16 +350,23 @@ else:
                     label="Download Word File⬇️",
                     data=bio.getvalue(),
                     file_name="sop.docx",
-                    mime='docx'):
+                    mime='docx',
+                    disabled=not st.session_state.rating_given):
                 st.rerun()
 
     with col3:
-        if st.session_state.section_index in [len(text_areas) - 2, len(text_areas) - 1]:
-            st.session_state.word_limit = st.number_input("Word Limit:", value=800, step=10, max_value=1200, min_value=500)
+        if st.session_state.section_index == len(text_areas) - 2:
+            st.session_state.word_limit = st.number_input("Word Limit:", value=800, step=10, max_value=1200,
+                                                          min_value=500)
+        elif st.session_state.section_index == len(text_areas) - 1:
+            st.session_state.word_limit = st.number_input("Word Limit:", value=800, step=10, max_value=1200,
+                                                          min_value=500, disabled=not st.session_state.rating_given)
 
     with col4:
         if state.section_index == len(text_areas) - 1:
-            regenerate = st.button("Try Again🔄")
+            print(st.session_state.rating_given)
+            print(not st.session_state.rating_given)
+            regenerate = st.button("Try Again🔄", disabled=not st.session_state.rating_given)
             user_data = database.get_user_data_by_id(st.session_state.user_id)
             fetched_data = {
                 "program": user_data.get("program", ""),
@@ -340,21 +388,8 @@ else:
                             **fetched_data,
                             resume_text=st.session_state.summary)
                         st.session_state.generated_sop = generated_sop
-                        user_data = database.get_user_data_by_id(st.session_state.user_id)
-                        ist = pytz.timezone('Asia/Kolkata')
-                        current_timestamp=datetime.now(ist).strftime("%A,%d %B %Y - %H:%M:%S")
-                        if 'drafts' in user_data and isinstance(user_data['drafts'], list):
-                            # If 'draft' is a list, fetch and append to it
-                            
-                            existing_draft = user_data['drafts']
-                            existing_draft.append({'content': st.session_state.generated_sop, 'timestamp': current_timestamp})
-                            print(existing_draft)
-                        else:
-                            # If 'draft' doesn't exist or is not a list, create a new list
-                            existing_draft = [{'content': st.session_state.generated_sop, 'timestamp': current_timestamp}]
-                        # Update the user's draft in the database
-                        database.update_user_by_id(st.session_state.user_id, {'drafts': existing_draft})
                         regen_status.update(label="SOP Regenerated", state="complete", expanded=False)
+                        st.session_state.rating_given = 0
                         st.rerun()
                         display_sop(generated_sop)
                 else:
@@ -362,14 +397,14 @@ else:
 
     with col5:
         if state.section_index == len(text_areas) - 1:
-            if st.button("Start Over⏪"):
+            if st.button("Start Over⏪", disabled=not st.session_state.rating_given):
                 state.section_index = 1
                 st.session_state.generated_sop = ""
                 st.session_state.summary = ""
                 st.rerun()
 
         elif state.section_index == len(text_areas) - 2:
-            if st.button("Generate SOP✅", disabled=st.session_state.section_index == len(text_areas)-1):
+            if st.button("Generate SOP✅", disabled=st.session_state.section_index == len(text_areas) - 1):
                 if 500 <= st.session_state.word_limit <= 1100:
                     with st.status("Generating Sop...", expanded=True) as sop_status:
                         save_to_database(current_section_key, text)
@@ -396,20 +431,6 @@ else:
                         st.write("SOP Generated Successfully")
                         st.session_state.generated_sop = generated_sop
                         time.sleep(0.2)
-                        user_data = database.get_user_data_by_id(st.session_state.user_id)
-                        ist = pytz.timezone('Asia/Kolkata')
-                        current_timestamp=datetime.now(ist).strftime("%A,%d %B %Y - %H:%M:%S")
-                        if 'drafts' in user_data and isinstance(user_data['drafts'], list):
-                            # If 'draft' is a list, fetch and append to it
-                            
-                            existing_draft = user_data['drafts']
-                            existing_draft.append({'content': st.session_state.generated_sop, 'timestamp': current_timestamp})
-                            print(existing_draft)
-                        else:
-                            # If 'draft' doesn't exist or is not a list, create a new list
-                            existing_draft = [{'content': st.session_state.generated_sop, 'timestamp': current_timestamp}]
-                        # Update the user's draft in the database
-                        database.update_user_by_id(st.session_state.user_id, {'drafts': existing_draft})
                         sop_status.update(label="SOP Generated", state="complete", expanded=False)
                         st.rerun()
                         display_sop(st.session_state.generated_sop)
