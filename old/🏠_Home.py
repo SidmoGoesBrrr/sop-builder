@@ -3,7 +3,6 @@ import streamlit as st
 from PIL import Image
 #####################################################################################################################################################
 im = Image.open('icon.png')
-st.set_page_config(page_title="SOP Generator", page_icon=im)
 st.session_state.user_id=""
 st.session_state.generated_sop=""
 st.markdown(

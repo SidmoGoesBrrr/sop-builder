@@ -21,7 +21,6 @@ def get_users_collection():
     return users_collection
 #####################################################################################################################################################
 im = Image.open('icon.png')
-st.set_page_config(page_title="SOP Generator", page_icon=im)
 st.header("Sign Up")
 
 

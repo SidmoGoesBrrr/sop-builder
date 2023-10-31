@@ -17,8 +17,7 @@ import io
 import os
 from datetime import datetime
 import pytz
-# im = Image.open('icon.png')
-# st.set_page_config(page_title="SOP Generator", page_icon=im)
+
 hide_streamlit_style = """
             <style>
             #MainMenu {visibility: hidden;}
