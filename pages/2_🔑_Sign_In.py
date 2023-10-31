@@ -130,7 +130,7 @@ if generate_otp:
             logging.info(f"Calling the OTP function now")
 
             st.write(send_otp(phone_number, gen_otp))
-            st.text("This is a temporary otp fix, as streamlit cloud doesn't seem to work with our airtel sms api, this should be fixed when we deploy on vultr on sopbuilder.admitabroad.com")
+            st.write("This is a temporary otp fix, as streamlit cloud doesn't seem to work with our airtel sms api, this should be fixed when we deploy on vultr on sopbuilder.admitabroad.com")
             st.success("OTP sent successfully")
             
             st.session_state.login_button = False
