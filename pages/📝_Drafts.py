@@ -5,11 +5,6 @@ import time
 import database
 from PIL import Image
 
-# Load the icon image
-im = Image.open('icon.png')
-
-# Set Streamlit page configuration
-st.set_page_config(page_title="SOP Generator", page_icon=im)
 
 # Define a function to display drafts in a table
 def display_drafts_page():

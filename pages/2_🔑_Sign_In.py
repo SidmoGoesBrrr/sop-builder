@@ -98,9 +98,7 @@ def send_otp(phone_number, generated_otp):
     return response.text
 
 # Call the function with the OTP
-im = Image.open('icon.png')
 
-st.set_page_config(page_title="SOP Generator", page_icon=im)
 
 if 'gen_button' not in st.session_state:
     st.session_state.disabled = True

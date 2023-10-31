@@ -25,6 +25,10 @@ hide_streamlit_style = """
             footer {visibility: hidden;}
             </style>
             """
+
+im = Image.open('icon.png')
+st.set_page_config(page_title="SOP Generator", page_icon=im)
+
 st.markdown(hide_streamlit_style, unsafe_allow_html=True) 
 if "user_logged_in" not in st.session_state:
     st.session_state.user_logged_in = False

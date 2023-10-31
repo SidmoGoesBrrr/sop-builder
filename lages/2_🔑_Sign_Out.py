@@ -4,7 +4,6 @@ import time
 from database import *
 from streamlit.components.v1 import html
 
-st.set_page_config(page_title="Sign Out")
 st.header("Sign Out")
 
 
