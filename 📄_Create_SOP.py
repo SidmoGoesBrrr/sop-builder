@@ -17,6 +17,8 @@ import io
 import os
 from datetime import datetime
 import pytz
+im = Image.open('icon.png')
+st.set_page_config(page_title="SOP Generator", page_icon=im)
 
 hide_streamlit_style = """
             <style>
@@ -38,8 +40,6 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
-im = Image.open('icon.png')
-st.set_page_config(page_title="SOP Generator", page_icon=im)
 
 st.markdown(hide_streamlit_style, unsafe_allow_html=True) 
 if "user_logged_in" not in st.session_state:
