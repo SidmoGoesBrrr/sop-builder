@@ -14,30 +14,32 @@ def display_drafts_page():
         user_data = database.get_user_data_by_id(user_id)
         drafts = user_data.get('drafts', [])
         if drafts:
-            st.dataframe(drafts_to_table(drafts),width=1000)
-            options_list=["-"]
-            num_options=[i for i in range(len(drafts))]
-            for num in num_options:  
-                options_list.append(num+1)
+            st.dataframe(drafts_to_table(drafts), width=1000)
+            options_list = ["-"]
+            num_options = [i for i in range(len(drafts))]
+            for num in num_options:
+                options_list.append(num + 1)
             draft_id = st.selectbox("Select a draft to view", options_list)
-            if draft_id!="-":
+            if draft_id != "-":
                 view_individual_draft(draft_id)
         else:
             st.info("No drafts found!")
     except Exception as e:
         st.error(f"An error occurred: {str(e)}")
 
+
 def view_individual_draft(draft_id):
     try:
-        draft = database.get_user_data_by_id(st.session_state.user_id)['drafts'][int(draft_id-1)]['content']
+        draft = database.get_user_data_by_id(st.session_state.user_id)['drafts'][int(draft_id - 1)]['content']
         st.header(f"Draft {draft_id}")
         st.subheader("Here is your draft:")
-        #draw a divider
+        # draw a divider
         st.markdown("---")
         st.write(draft)
         st.markdown("---")
     except Exception as e:
         st.error(f"An error occurred: {str(e)}")
+
 
 def drafts_to_table(drafts):
     # Create a table from the list of drafts
@@ -46,7 +48,7 @@ def drafts_to_table(drafts):
     table_data = []
     for draft in drafts:
         university_name = draft.get('University Name', user_data['university'])
-        program_name = draft.get('Program Name', user_data['program']) #Saturday,28 October 2023 - 20:33:59
+        program_name = draft.get('Program Name', user_data['program'])  # Saturday,28 October 2023 - 20:33:59
         date_of_draft = draft.get('Date of Draft', draft['timestamp'].split('-')[0])
         time_stamp = draft.get('Time', draft['timestamp'].split('-')[1])
         table_data.append([university_name, program_name, date_of_draft, time_stamp])
@@ -56,13 +58,13 @@ def drafts_to_table(drafts):
 
     return [columns] + table_data
 
+
 # Check if the user is logged in and display drafts if logged in
 if st.session_state.get("user_logged_in") == True:
     logging.info(st.experimental_get_query_params)
-    
-    
-        #view_individual_draft(draft_id)
-    #else:
+
+    # view_individual_draft(draft_id)
+    # else:
     display_drafts_page()
 else:
     st.error("⚠️ You need to log in to access this feature. Please log in. ⚠️")
