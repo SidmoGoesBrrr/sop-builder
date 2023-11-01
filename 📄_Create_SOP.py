@@ -275,7 +275,7 @@ else:
 
     # Navigation buttons
     sop_display_area = st.empty()
-    st.markdown("""<hr> """, unsafe_allow_html=True)
+    st.divider()
     col1, col2, col3, col4, col5 = st.columns(5)
     banner = st.empty()
     if state.section_index == len(text_areas) - 1:
