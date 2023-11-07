@@ -11,23 +11,20 @@ def display_drafts_page():
     user_data = database.get_user_data_by_id(st.session_state.user_id)
     drafts = user_data.get('drafts', [])
     if drafts:
-        draft_columns = st.columns(4)  # Create 4 columns for drafts
-
         for i, draft in enumerate(drafts, start=1):
             university_name = draft.get('University Name', user_data['university'])
             program_name = draft.get('Program Name', user_data['program'])
             date_of_draft = draft.get('Date of Draft', draft['timestamp'].split('-')[0])
             time_stamp = draft.get('Time', draft['timestamp'].split('-')[1])
 
-            # Use the current column to display draft information
-            with draft_columns[i % 4]:
-                st.subheader(f"Draft {i}")
-                st.text(f"University Name: {university_name}")
-                st.text(f"Program Name: {program_name}")
-                st.text(f"Date of Draft: {date_of_draft}")
-                st.text(f"Time Stamp: {time_stamp}")
-                if st.button(f"View Draft {i}"):
-                    view_individual_draft(i, draft)
+            st.subheader(f"Draft {i}")
+            st.text(f"University Name: {university_name}")
+            st.text(f"Program Name: {program_name}")
+            st.text(f"Date of Draft: {date_of_draft}")
+            st.text(f"Time Stamp: {time_stamp}")
+            
+            if st.button(f"View Draft {i}"):
+                view_individual_draft(i, draft)
 
     else:
         st.info("No drafts found!")
