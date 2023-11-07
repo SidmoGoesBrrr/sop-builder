@@ -13,3 +13,4 @@ reportlab
 streamlit
 tiktoken
 pyperclip
+st-star-rating
