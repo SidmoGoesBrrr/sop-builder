@@ -24,7 +24,7 @@ def display_drafts_page():
             st.text(f"Time Stamp: {time_stamp}")
             
             if st.button(f"View Draft {i}"):
-                view_individual_draft(i, draft)
+                view_individual_draft(i, draft['content'])
 
     else:
         st.info("No drafts found!")
