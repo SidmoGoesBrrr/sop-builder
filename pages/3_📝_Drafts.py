@@ -9,23 +9,25 @@ from PIL import Image
 # Define a function to display drafts in a table
 def display_drafts_page():
     st.header("Drafts")
-    user_id = st.session_state.user_id
-    try:
-        user_data = database.get_user_data_by_id(user_id)
-        drafts = user_data.get('drafts', [])
-        if drafts:
-            st.dataframe(drafts_to_table(drafts), width=1000)
-            options_list = ["-"]
-            num_options = [i for i in range(len(drafts))]
-            for num in num_options:
-                options_list.append(num + 1)
-            draft_id = st.selectbox("Select a draft to view", options_list)
-            if draft_id != "-":
-                view_individual_draft(draft_id)
-        else:
-            st.info("No drafts found!")
-    except Exception as e:
-        st.error(f"An error occurred: {str(e)}")
+    user_data = database.get_user_data_by_id(st.session_state.user_id)
+    drafts = user_data.get('drafts', [])
+    if drafts:
+        for i, draft in enumerate(drafts, start=1):
+            university_name = draft.get('University Name', user_data['university'])
+            program_name = draft.get('Program Name', user_data['program'])
+            date_of_draft = draft.get('Date of Draft', draft['timestamp'].split('-')[0])
+            time_stamp = draft.get('Time', draft['timestamp'].split('-')[1])
+            st.subheader(f"Draft {i}")
+            st.text(f"University Name: {university_name}")
+            st.text(f"Program Name: {program_name}")
+            st.text(f"Date of Draft: {date_of_draft}")
+            st.text(f"Time Stamp: {time_stamp}")
+            if st.button(f"View Draft {i}"):
+                view_individual_draft(i)
+    else:
+        st.info("No drafts found!")
+
+
 
 
 def view_individual_draft(draft_id):
@@ -41,22 +43,6 @@ def view_individual_draft(draft_id):
         st.error(f"An error occurred: {str(e)}")
 
 
-def drafts_to_table(drafts):
-    # Create a table from the list of drafts
-    logging.info(f"Drafts: {drafts}")
-    user_data = database.get_user_data_by_id(st.session_state.user_id)
-    table_data = []
-    for draft in drafts:
-        university_name = draft.get('University Name', user_data['university'])
-        program_name = draft.get('Program Name', user_data['program'])  # Saturday,28 October 2023 - 20:33:59
-        date_of_draft = draft.get('Date of Draft', draft['timestamp'].split('-')[0])
-        time_stamp = draft.get('Time', draft['timestamp'].split('-')[1])
-        table_data.append([university_name, program_name, date_of_draft, time_stamp])
-
-    # Define column names for the table
-    columns = ["University Name", "Program Name", "Date of Draft", "Time Stamp"]
-
-    return [columns] + table_data
 
 
 # Check if the user is logged in and display drafts if logged in
