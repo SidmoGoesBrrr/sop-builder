@@ -17,10 +17,10 @@ import io
 import os
 from datetime import datetime
 import pytz
-from streamlit_star_rating import st_star_rating
 
 im = Image.open('icon.png')
 st.set_page_config(page_title="SOP Generator", page_icon=im)
+from streamlit_star_rating import st_star_rating
 
 hide_streamlit_style = """
             <style>
