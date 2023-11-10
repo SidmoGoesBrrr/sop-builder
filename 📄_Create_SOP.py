@@ -93,9 +93,9 @@ def show_success_banner():
     banner.success("Text saved successfully!")
 
 
-def check_if_program_length_okay(text):
+def check_if_program_length_okay(text, min_limit=50, max_limit=500):
     word_count = len(text.split())
-    return word_count >= 50
+    return min_limit <= word_count <= max_limit
 
 
 def error_msg(question):
@@ -103,7 +103,7 @@ def error_msg(question):
             current_section['question'] == "Which program is this SOP for?":
         banner.error("Please do not leave this field blank")
     else:
-        banner.error("Please enter 50 words or more")
+        banner.error("Please enter between 50 and 500 words.")
 
 
 def count_words(text):
