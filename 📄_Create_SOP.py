@@ -1,10 +1,12 @@
 import streamlit as st
+from PIL import Image
+im = Image.open('icon.png')
 st.set_page_config(page_title="SOP Generator", page_icon=im)
 
 from open_ai_sop import generate_sop, resume_summarize_with_gpt
 # Check if the user is logged in
 import requests
-from PIL import Image
+
 from streamlit import session_state as state
 from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Paragraph
@@ -20,7 +22,6 @@ import os
 from datetime import datetime
 import pytz
 
-im = Image.open('icon.png')
 from streamlit_star_rating import st_star_rating
 
 hide_streamlit_style = """
