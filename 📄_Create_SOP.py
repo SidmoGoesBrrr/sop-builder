@@ -468,8 +468,9 @@ def display_user_info_html(user_name, user_credits):
         box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
     }
     </style>
-    <div class="user-info">"""+f"""\n<p><strong>User:</strong> {user_name}</p>
-        <p><strong>Credits:</strong> {user_credits}</p>
+    <div class="user-info">
+    <p><strong>User:</strong> {user_name}</p>
+    <p><strong>Credits:</strong> {user_credits}</p>
     </div>"""
     
 
