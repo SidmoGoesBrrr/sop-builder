@@ -11,7 +11,7 @@ def generate_unique_code():
 # Function to display the payment page
 def display_payment_page():
     # Razorpay payment link
-    payment_link = "https://rzp.io/l/3FTyewKI8f"
+    payment_link = "https://rzp.io/l/aasopbuilder"
     if 'waiting_for_payment' not in st.session_state:
         st.session_state.waiting_for_payment = False
     # Displaying the payment button
