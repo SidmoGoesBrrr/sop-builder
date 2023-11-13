@@ -52,30 +52,6 @@ st.markdown(
 
 st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 # Function to display user information with HTML and CSS
-def display_user_info_html(user_name, user_credits):
-    # Define the HTML template
-    html = """
-    <style>
-    .user-info {
-        position: fixed;
-        bottom: 10px;
-        right: 10px;
-        background-color: #f1f1f1;
-        padding: 10px;
-        border-radius: 5px;
-        box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
-    }
-    </style>
-    <div class="user-info">"""+f"""\n<p><strong>User:</strong> {user_name}</p>
-        <p><strong>Credits:</strong> {user_credits}</p>
-    </div>"""
-    
-
-    # Display the HTML
-    st.markdown(html, unsafe_allow_html=True)
-
-# Example usage
-display_user_info_html("John Doe", 100)
 
 if "user_logged_in" not in st.session_state:
     st.session_state.user_logged_in = False
@@ -478,3 +454,27 @@ else:
                     st.rerun()
                 else:
                     error_msg(current_section['question'])
+
+def display_user_info_html(user_name, user_credits):
+    # Define the HTML template
+    html = """
+    <style>
+    .user-info {
+        position: fixed;
+        bottom: 10px;
+        right: 100px;
+        padding: 10px;
+        border-radius: 5px;
+        box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+    }
+    </style>
+    <div class="user-info">"""+f"""\n<p><strong>User:</strong> {user_name}</p>
+        <p><strong>Credits:</strong> {user_credits}</p>
+    </div>"""
+    
+
+    # Display the HTML
+    st.markdown(html, unsafe_allow_html=True)
+
+# Example usage
+display_user_info_html("John Doe", 100)
