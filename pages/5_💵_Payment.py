@@ -28,7 +28,7 @@ def display_payment_page():
         html(open_script)
 
     # Create a Streamlit button to open the payment link
-    if st.button("Pay now",on_click(open_page, payment_link)):
+    if st.button("Pay now",on_click=open_page(payment_link)):
         st.write("If you are not redirected, please click here.")
         st.session_state["payment_status"] = "waiting"
         st.write("Waiting for payment...")
