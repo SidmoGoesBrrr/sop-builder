@@ -4,6 +4,7 @@ from pymongo import MongoClient
 import time
 import database
 import random
+import streamlit as st
 def generate_unique_code():
     # Generate a random number between 100 and 999
     return str(random.randint(100, 999))
@@ -14,6 +15,7 @@ def display_payment_page():
     if 'waiting_for_payment' not in st.session_state:
         st.session_state.waiting_for_payment = False
     # Displaying the payment button
+    
     if st.button('Pay Now'):
         
         # Open the payment link in a new tab
@@ -22,11 +24,13 @@ def display_payment_page():
         st.write("Also make sure to enter this unique code in the payment page : " + unique_code)
         # Set a flag indicating the payment process has started
         st.session_state['waiting_for_payment'] = True
-
+        st.info("⏳ Waiting for payment...")
         # Redirect to the payment page
         while st.session_state['waiting_for_payment']==True:
-            st.info("⏳ Waiting for payment...")
+            
             time.sleep(1)
+
+            
 
    
 
