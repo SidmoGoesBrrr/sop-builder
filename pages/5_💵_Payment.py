@@ -10,7 +10,7 @@ def display_payment_page():
     payment_link = "https://rzp.io/l/3FTyewKI8f"
 
     # Displaying the payment button
-    if st.button('Proceed to Payment'):
+    if st.link_button('Proceed to Payment', payment_link):
         # Open the payment link
         st.markdown(f"<a href='{payment_link}' target='_blank'>Click here if you are not redirected</a>", unsafe_allow_html=True)
         # Set a flag indicating the payment process has started
