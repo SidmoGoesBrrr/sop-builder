@@ -54,9 +54,9 @@ with col1:
     with subcol2:
         redirect_button(f"https://wa.me/?text={db_url}", "Share On WhatsApp")
         redirect_button(f"https://www.reddit.com/submit?url={db_url}", "Share On Reddit")
-        redirect_button(f"https://mail.google.com/mail/u/0/?fs=1&tf=cm&su=Link%20To%20SOP%20Buider&body=https%3A%2F%2Fsop-builder.streamlit.app%2F#inbox", "Share Via GMail")
+        redirect_button(f"https://mail.google.com/mail/u/0/?fs=1&tf=cm&su=Check%20Out%20SOP%20Buider&body=https%3A%2F%2Fsop-builder.streamlit.app%2F#inbox", "Share Via GMail")
         # redirect_button("Not SURE", "Share Via Gmail")
 
-with col2:
-    st.write("Or you can Copy the Link")
-    st.button("Copy Link", on_click=pyperclip.copy("https://sop-builder.streamlit.app/"))
+# with col2:
+#     st.write("Or you can Copy the Link")
+#     st.button("Copy Link", on_click=pyperclip.copy("https://sop-builder.streamlit.app/"))
