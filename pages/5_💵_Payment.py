@@ -18,7 +18,8 @@ def display_payment_page():
         
         # Open the payment link in a new tab
         unique_code = generate_unique_code()
-        st.markdown(f"<a href='{payment_link}?unique_code={unique_code}' target='_blank'>Click here to complete the payment</a>", unsafe_allow_html=True)
+        st.markdown(f"<a href='{payment_link}' target='_blank'>Click here to complete the payment</a>", unsafe_allow_html=True)
+        st.write("Also make sure to enter this unique code in the payment page : " + unique_code)
         # Set a flag indicating the payment process has started
         st.session_state['waiting_for_payment'] = True
 
