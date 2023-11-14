@@ -385,7 +385,7 @@ else:
                 "program_benefits": user_data.get("program_benefits", []),
                 "contribution": user_data.get("contribution", [])
             }
-            if regenerate and database.get_user_data_by_id(st.session_state.user_id).get("SOP_CREDITS", 0) >= 1:
+            if regenerate:
                 if 500 <= st.session_state.word_limit <= 1100:
                     with st.status("Regenerating Sop...", expanded=True) as regen_status:
                         st.session_state.generated_sop = ""
@@ -395,9 +395,6 @@ else:
                             resume_text=st.session_state.summary)
                         st.session_state.generated_sop = generated_sop
                         regen_status.update(label="SOP Regenerated", state="complete", expanded=False)
-                        database.update_user_data_by_id(st.session_state.user_id,
-                                                        {"SOP_CREDITS": database.get_user_data_by_id(
-                                                            st.session_state.user_id).get("SOP_CREDITS", 0) - 1})
 
                         st.session_state.rating_given = 0
                         st.rerun()
@@ -417,7 +414,7 @@ else:
 
         elif state.section_index == len(text_areas) - 2:
             if st.button("Generate SOP✅", disabled=st.session_state.section_index == len(text_areas) - 1) and \
-                    database.get_user_data_by_id(st.session_state.user_id).get("SOP_CREDITS", 0) >= 0:
+                    database.get_user_data_by_id(st.session_state.user_id).get("SOP_CREDITS", 0) >= 99:
                 if 500 <= st.session_state.word_limit <= 1100:
                     with st.status("Generating Sop...", expanded=True) as sop_status:
                         save_to_database(current_section_key, text)
@@ -443,7 +440,7 @@ else:
                             **fetched_data)
                         st.write("SOP Generated Successfully")
                         database.update_user_data_by_id(st.session_state.user_id,
-                                                        {"SOP_CREDITS": database.get_user_data_by_id(st.session_state.user_id).get("SOP_CREDITS", 0) - 1})
+                                                        {"SOP_CREDITS": database.get_user_data_by_id(st.session_state.user_id).get("SOP_CREDITS", 0) - 99})
                         st.session_state.generated_sop = generated_sop
                         time.sleep(0.2)
                         sop_status.update(label="SOP Generated", state="complete", expanded=False)
