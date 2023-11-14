@@ -29,7 +29,7 @@ def display_payment_page():
         while st.session_state['waiting_for_payment']==True:
             
             time.sleep(1)
-
+            
             
 
    

@@ -457,16 +457,16 @@ else:
 
 def display_user_info_html(user_name, user_credits):
     # Define the HTML template
-    html = """
+    html = f"""
     <style>
-    .user-info {
+    .user-info {{
         position: fixed;
         bottom: 10px;
         align-items: center;
         padding: 10px;
         border-radius: 5px;
         box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
-    }
+    }}
     </style>
     <div class="user-info">
     <p><strong>User:</strong> {user_name}</p>
