@@ -385,7 +385,7 @@ else:
                 "program_benefits": user_data.get("program_benefits", []),
                 "contribution": user_data.get("contribution", [])
             }
-            if regenerate and database.get_user_data_by_id(st.session_state.user_id).get("SOP_CREDITS", 0) >= 9:
+            if regenerate and database.get_user_data_by_id(st.session_state.user_id).get("SOP_CREDITS", 0) >= 1:
                 if 500 <= st.session_state.word_limit <= 1100:
                     with st.status("Regenerating Sop...", expanded=True) as regen_status:
                         st.session_state.generated_sop = ""
@@ -397,7 +397,7 @@ else:
                         regen_status.update(label="SOP Regenerated", state="complete", expanded=False)
                         database.update_user_data_by_id(st.session_state.user_id,
                                                         {"SOP_CREDITS": database.get_user_data_by_id(
-                                                            st.session_state.user_id).get("SOP_CREDITS", 0) - 9})
+                                                            st.session_state.user_id).get("SOP_CREDITS", 0) - 1})
 
                         st.session_state.rating_given = 0
                         st.rerun()
@@ -417,7 +417,7 @@ else:
 
         elif state.section_index == len(text_areas) - 2:
             if st.button("Generate SOP✅", disabled=st.session_state.section_index == len(text_areas) - 1) and \
-                    database.get_user_data_by_id(st.session_state.user_id).get("SOP_CREDITS", 0) >= 99:
+                    database.get_user_data_by_id(st.session_state.user_id).get("SOP_CREDITS", 0) >= 0:
                 if 500 <= st.session_state.word_limit <= 1100:
                     with st.status("Generating Sop...", expanded=True) as sop_status:
                         save_to_database(current_section_key, text)
@@ -443,7 +443,7 @@ else:
                             **fetched_data)
                         st.write("SOP Generated Successfully")
                         database.update_user_data_by_id(st.session_state.user_id,
-                                                        {"SOP_CREDITS": database.get_user_data_by_id(st.session_state.user_id).get("SOP_CREDITS", 0) - 99})
+                                                        {"SOP_CREDITS": database.get_user_data_by_id(st.session_state.user_id).get("SOP_CREDITS", 0) - 1})
                         st.session_state.generated_sop = generated_sop
                         time.sleep(0.2)
                         sop_status.update(label="SOP Generated", state="complete", expanded=False)
@@ -477,14 +477,15 @@ def display_user_info_html(user_id):
     .user-info {{
         position: fixed;
         bottom: 10px;
-        align-items: center;
-        padding: 10px;
+        left: 90%;
+        align-items: right;
+        text-align: right;
         border-radius: 5px;
         box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
     }}
     </style>
     <div class="user-info">
-    <p><strong>User:</strong> {user_name}</p>
+    <!-- <p><strong>User:</strong> {user_name}</p> -->
     <p><strong>Credits:</strong> {user_credits}</p>
     </div>"""
 
