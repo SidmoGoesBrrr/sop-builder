@@ -19,7 +19,7 @@ def display_payment_page():
     if "payment_successful" not in st.session_state:
         st.session_state.payment_successful = False
     
-    if st.button('Pay Now To Get SOP Credits'):
+    if st.button('Pay INR 99.00'):
         # Open the payment link in a new tab
         st.markdown(f"<a href='{payment_link}' target='_blank'>Click here to complete the payment</a>", unsafe_allow_html=True)
         # Set a flag indicating the payment process has started
@@ -36,9 +36,9 @@ def display_payment_page():
                     st.session_state['payment_successful'] = True
                     # Update the user's SOP credits
                     user_data = database.get_user_data_by_id(st.session_state.user_id)
-                    user_data['SOP_CREDITS'] += 1
+                    user_data['SOP_CREDITS'] += 99
                     database.update_user(user_data['username'], user_data)
-                    st.success("🎉 Congratulations! You have successfully purchased 1 SOP credit. You can now create 1 SOP draft. 🎉")
+                    st.success("🎉 Congratulations! You have successfully purchased 99 SOP credit. You can now create 1 SOP draft. 🎉")
                     st.balloons()
                     st.info("🔥 You can also view your SOP draft by clicking on the 'Drafts' button on the sidebar. 🔥")
                     break
