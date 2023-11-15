@@ -12,6 +12,5 @@ razorpay
 reportlab
 streamlit
 tiktoken
-pyperclip
 st-star-rating
 streamlit-analytics

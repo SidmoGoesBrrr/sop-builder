@@ -7,8 +7,8 @@ from PIL import Image
 
 im = Image.open('icon.png')
 st.header("Sign Out")
-st.write("You are about to sign out of your account.")
-
+st.write("Click on the button Below to Sign out")
+st.write("Thank you for using our SOP generator") 
 
 def nav_page(page_name, timeout_secs=3):
     nav_script = """
