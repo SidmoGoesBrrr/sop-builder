@@ -77,7 +77,7 @@ def display_payment_page():
                         # Strip whitespace and newline characters from the payment status
                         payment_status = payment_status.strip()
                         logging.info(payment_status)
-                        if payment_status == "captured paid":
+                        if payment_status == "captured\npaid":
                             st.session_state['waiting_for_payment'] = False
                             st.session_state['payment_successful'] = True
                             # Update the user's SOP credits
