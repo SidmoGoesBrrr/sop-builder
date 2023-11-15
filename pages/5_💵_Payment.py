@@ -76,7 +76,7 @@ def display_payment_page():
                         payment_status = highest_timestamp_row['Payment Status']
                         # Strip whitespace and newline characters from the payment status
                         payment_status = payment_status.strip()
-
+                        logging.info(payment_status)
                         if payment_status == "captured paid":
                             st.session_state['waiting_for_payment'] = False
                             st.session_state['payment_successful'] = True
