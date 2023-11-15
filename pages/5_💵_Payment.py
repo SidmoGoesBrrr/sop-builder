@@ -18,7 +18,7 @@ def display_payment_page():
     st.title("Payment Page")
     st.write("You can buy extra credits here")
     st.write("Everytime you change inputs, you will need 99 credits to generate a new SOP")
-    st.write("To regenerate with the same input, you will need only 9 credits")
+    st.write("To regenerate with the same input you will need 0 credits")
     st.write("You can buy 99 credits for INR 99.00")
     payment_link = "https://rzp.io/l/aasopbuilder"
     if 'waiting_for_payment' not in st.session_state:
@@ -87,9 +87,15 @@ def display_payment_page():
                             st.session_state['payment_successful'] = True
                             # Update the user's SOP credits
                             user_data = database.get_user_data_by_id(st.session_state.user_id)
-                            user_data['SOP_CREDITS'] += 99
+                            no_of_sop=highest_timestamp_row['Payment Order Items Quantity:']
+                            logging.info(no_of_sop)
+                            logging.info(99*no_of_sop)
+                            user_data['SOP_CREDITS'] += 99*no_of_sop
                             database.update_user(user_data['username'], user_data)
-                            st.success("🎉 Congratulations! You have successfully purchased 99 SOP credit. You can now create 1 SOP draft. 🎉")
+                            if no_of_sop==1:
+                                st.success(f"🎉 Congratulations! You have successfully purchased {99*no_of_sop} SOP credits. You can now create {no_of_sop} SOP draft. 🎉")
+                            elif no_of_sop>1:
+                                st.success(f"🎉 Congratulations! You have successfully purchased {99*no_of_sop} SOP credits. You can now create {no_of_sop} SOP drafts. 🎉")
                             st.balloons()
                             st.info("🔥 You can also view your SOP draft by clicking on the 'Drafts' button on the sidebar. 🔥")
                             break

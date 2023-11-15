@@ -127,7 +127,7 @@ def generate_sop(
 
 def resume_summarize_with_gpt(resume_text):
     completion = client.chat.completions.create(
-        model="gpt-3.5-turbo-16k",
+        model="gpt-3.5-turbo",
         temperature=0.3,
         max_tokens=300,
         messages=[
