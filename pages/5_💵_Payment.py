@@ -6,7 +6,9 @@ import database
 import random
 import streamlit as st
 import pandas as pd
+from PIL import Image
 
+im = Image.open('icon.png')
 
 # Function to display the payment page
 def display_payment_page():
@@ -30,9 +32,9 @@ def display_payment_page():
             sheet_url = pd.read_csv("https://docs.google.com/spreadsheets/d/1rs4dVdlLXi8c3kN0pRRegu-gKjIH6j1gw_3pyGUZJo0/export?gid=719810628&format=csv",
                                     index_col=0)
             logging.info(sheet_url)
-            logging.info(sheet_url.index)
+            logging.info(sheet_url.index(1))
             logging.info(database.get_user_data_by_id(st.session_state.user_id).get("phone_number", 0))
-            logging.info(sheet_url.loc[database.get_user_data_by_id(st.session_state.user_id).get("phone_number", 0), "Payment Status"])
+            logging.info(sheet_url.loc)
             
             # check if there is the required phone number in the sheet and if yes, check payment status of that phone number
             if database.get_user_data_by_id(st.session_state.user_id).get("phone_number", 0) in sheet_url.index:
