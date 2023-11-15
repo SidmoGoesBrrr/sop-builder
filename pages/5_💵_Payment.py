@@ -19,9 +19,9 @@ def display_payment_page():
     if "payment_successful" not in st.session_state:
         st.session_state.payment_successful = False
     
-    if st.button('Pay INR 99.00'):
+    if st.button('Buy Credits'):
         # Open the payment link in a new tab
-        st.markdown(f"<a href='{payment_link}' target='_blank'>Click here to complete the payment</a>", unsafe_allow_html=True)
+        st.link_button("Pay Now", payment_link)
         # Set a flag indicating the payment process has started
         st.session_state['waiting_for_payment'] = True
         st.info("⏳ Waiting for payment...")
