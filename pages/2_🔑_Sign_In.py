@@ -15,7 +15,9 @@ import streamlit as st
 import os
 from streamlit.components.v1 import html
 import logging
+from PIL import Image
 
+im = Image.open('icon.png')
 hide_streamlit_style = """
             <style>
             #MainMenu {visibility: hidden;}

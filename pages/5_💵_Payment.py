@@ -6,7 +6,9 @@ import database
 import random
 import streamlit as st
 import pandas as pd
+from PIL import Image
 
+im = Image.open('icon.png')
 
 # Function to display the payment page
 def display_payment_page():

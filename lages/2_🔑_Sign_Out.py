@@ -3,7 +3,9 @@ import streamlit as st
 import time
 from database import *
 from streamlit.components.v1 import html
+from PIL import Image
 
+im = Image.open('icon.png')
 st.header("Sign Out")
 
 

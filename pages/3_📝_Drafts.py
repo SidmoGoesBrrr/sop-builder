@@ -5,6 +5,7 @@ import time
 import database
 from PIL import Image
 
+im = Image.open('icon.png')
 # Define a function to display drafts in a table
 def display_drafts_page():
     st.header("Drafts")

@@ -1,7 +1,8 @@
 import streamlit as st
 import pyperclip
 from urllib.parse import urlparse, urlencode
-
+from PIL import Image
+im = Image.open('icon.png')
 db_url = urlparse("https://sop-builder.streamlit.app/").netloc
 
 st.title("Share Your SOP")
