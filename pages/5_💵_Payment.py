@@ -31,10 +31,8 @@ def display_payment_page():
         st.info("⏳ Waiting for payment...")
         # Redirect to the payment page
         while st.session_state['waiting_for_payment']:
-            sheet_url = pd.read_csv("https://docs.google.com/spreadsheets/d/1rs4dVdlLXi8c3kN0pRRegu-gKjIH6j1gw_3pyGUZJo0/export?gid=719810628&format=csv",
-                                    index_col=1)
+            sheet_url = pd.read_csv("https://docs.google.com/spreadsheets/d/1rs4dVdlLXi8c3kN0pRRegu-gKjIH6j1gw_3pyGUZJo0/export?gid=719810628&format=csv")
             logging.info(sheet_url)
-            logging.info(sheet_url.index)
             sop_db_ph_no="91"+database.get_user_data_by_id(st.session_state.user_id).get("phone_number", 0)
             razorpay_created_at=sheet_url.loc[sop_db_ph_no, 'Created At']
             created_at_datetime = datetime.fromtimestamp(razorpay_created_at, tz=pytz.UTC)
@@ -49,7 +47,7 @@ def display_payment_page():
             logging.info(sheet_url.loc)
             
             # check if there is the required phone number in the sheet and if yes, check payment status of that phone number
-            if sop_db_ph_no in sheet_url.index and time_difference < 180: #3 minutes
+            if sop_db_ph_no in sheet_url and time_difference < 180: #3 minutes
                 payment_status = sheet_url.loc[database.get_user_data_by_id(st.session_state.user_id).get("phone_number", 0), "Payment Status"]
                 # Strip whitespace and newline characters from the payment status
                 payment_status = payment_status.strip()
