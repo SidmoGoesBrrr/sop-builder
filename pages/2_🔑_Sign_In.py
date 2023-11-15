@@ -116,7 +116,7 @@ st.header("Sign In")
 username = st.text_input("Name")
 phone_number = st.text_input("Mobile Number", placeholder="9631331342")
 if username.strip() is not None and phone_number.strip() is not None:
-    logging.info(username, phone_number)
+    logging.info(username+ phone_number)
     st.session_state.disabled = False
 
 generate_otp = st.button("Generate OTP", disabled=st.session_state.disabled, key='gen_button')
