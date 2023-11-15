@@ -37,7 +37,7 @@ def nav_page(page_name, timeout_secs=3):
 
 if st.button('Sign Out'):
     st.session_state.user_logged_in = False
-    st.session_state.user_id = ""
+    st.session_state.login_button = True
     st.success("Logged out Successfully.")
     time.sleep(2)
     os.rename(r'pages/2_🔑_Sign_Out.py', r'lages/2_🔑_Sign_Out.py')
@@ -45,6 +45,6 @@ if st.button('Sign Out'):
     st.session_state.disabled = True
     st.session_state['button'] = False
     for i in st.session_state:
-        if i != 'button' and i != 'disabled' and i != 'user_logged_in' and i != 'user_id':
-            st.session_state[i] = None
+        if i != 'user_logged_in' and i != 'login_button':
+            del st.session_state[i]
     nav_page('sign_in')
