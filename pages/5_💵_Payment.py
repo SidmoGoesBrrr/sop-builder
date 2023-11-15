@@ -50,11 +50,16 @@ def display_payment_page():
                 break
             try:
                 sheet_url = pd.read_csv("https://docs.google.com/spreadsheets/d/1rs4dVdlLXi8c3kN0pRRegu-gKjIH6j1gw_3pyGUZJo0/export?gid=719810628&format=csv")
-                logging.info(sheet_url)
                 sop_db_ph_no="91"+database.get_user_data_by_id(st.session_state.user_id).get("phone_number", 0)
                 logging.info(sop_db_ph_no)
 
-                filtered_df = sheet_url[sheet_url['Payment Contact'] == sop_db_ph_no]
+                filtered_df = None
+                if len(str(sheet_url['Payment Contact'])) == 12:
+                    if str(sheet_url['Payment Contact']).startswith('91'):
+                        filtered_df = sheet_url[sheet_url['Payment Contact'] == sheet_url['Payment Contact']]
+                elif len(str(sheet_url['Payment Contact'])) == 10:
+                    sop_db_ph_no = '91' + sop_db_ph_no
+                    filtered_df = sheet_url[sheet_url['Payment Contact'] == sop_db_ph_no]
                 logging.info(filtered_df)
                 if not filtered_df.empty:
                     # Find the row with the highest 'Created At' timestamp
