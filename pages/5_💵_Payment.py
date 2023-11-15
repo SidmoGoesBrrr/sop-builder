@@ -72,7 +72,7 @@ def display_payment_page():
                     logging.info(time_difference)
                     
                     # check if there is the required phone number in the sheet and if yes, check payment status of that phone number
-                    if sop_db_ph_no in sheet_url and time_difference < 180: #3 minutes
+                    if sop_db_ph_no in sheet_url['Processed Payment Contact'].values and time_difference < 180: #3 minutes
                         payment_status = highest_timestamp_row['Payment Status']
                         # Strip whitespace and newline characters from the payment status
                         payment_status = payment_status.strip()
