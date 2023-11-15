@@ -22,7 +22,10 @@ hide_streamlit_style = """
             footer {visibility: hidden;}
             </style>
             """
-st.markdown(hide_streamlit_style, unsafe_allow_html=True) 
+
+st.markdown(hide_streamlit_style, unsafe_allow_html=True)
+
+
 @st.cache_resource(ttl=1200)
 def get_users_collection():
     users_collection = database.users_collection
@@ -86,16 +89,17 @@ def send_otp(phone_number, generated_otp):
     #     print(response.text)
     #     logging.error(response.text)
     # return response
-    #sends post request to the url https://reqres.in/api/users with phone number and otp as parameters
+    # sends post request to the url https://reqres.in/api/users with phone number and otp as parameters
     url = 'https://reqres.in/api/users'
     data = {
         "phone_number": phone_number,
         "otp": generated_otp
     }
     response = requests.post(url, data=data)
-    #response = requests.post(url, data=data)
+    # response = requests.post(url, data=data)
     logging.info(response.text)
     return response.text
+
 
 # Call the function with the OTP
 
@@ -105,15 +109,15 @@ if 'gen_button' not in st.session_state:
 
 if 'login_button' not in st.session_state:
     st.session_state.login_button = True
-    
+
 st.header("Sign In")
 username = st.text_input("Name")
 phone_number = st.text_input("Mobile Number", placeholder="9631331342")
-if username is not None and phone_number is not None:
+if username.trim() is not None and phone_number.trim() is not None:
+    print(username, phone_number)
     st.session_state.disabled = False
 
 generate_otp = st.button("Generate OTP", disabled=st.session_state.disabled, key='gen_button')
-
 
 if generate_otp:
     st.session_state.disabled = False
@@ -125,14 +129,16 @@ if generate_otp:
         if username in [user['username'] for user in users_collection.find()] and phone_number in [user['phone_number']
                                                                                                    for user in
                                                                                                    users_collection.find()]:
+            print(username, phone_number)
             gen_otp = random.randint(1000, 9999)
             logging.info(f"Generated OTP: {gen_otp}")
             logging.info(f"Calling the OTP function now")
 
             st.write(send_otp(phone_number, gen_otp))
-            st.write("This is a temporary otp fix, as streamlit cloud doesn't seem to work with our airtel sms api, this should be fixed when we deploy on vultr on sopbuilder.admitabroad.com")
+            st.write(
+                "This is a temporary otp fix, as streamlit cloud doesn't seem to work with our airtel sms api, this should be fixed when we deploy on vultr on sopbuilder.admitabroad.com")
             st.success("OTP sent successfully")
-            
+
             st.session_state.login_button = False
             st.session_state.generated_otp = gen_otp
         else:
@@ -161,4 +167,3 @@ if not st.session_state.login_button:
             st.error("Invalid OTP")
             st.session_state.disabled = False
             time.sleep(1)
-    
