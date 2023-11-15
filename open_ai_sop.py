@@ -1,4 +1,4 @@
-import openai
+from openai import OpenAI
 import streamlit as st
 import time
 import os
@@ -7,7 +7,7 @@ import logging
 
 
 os.environ['OPENAI_API_KEY'] = st.secrets['api_key']
-openai.api_key = os.environ['OPENAI_API_KEY']
+client = OpenAI(api_key=os.environ['OPENAI_API_KEY'])
 logging.basicConfig(level=logging.INFO)
 fine_tuning_model = st.secrets['ft_model']
 
@@ -55,7 +55,7 @@ def generate_sop(
     else:
         resume = f"Also consider the following skills and work experiance while writing the SOP, if you think it fits. {resume_text}"
 
-    completion = openai.ChatCompletion.create(
+    completion = client.chat.completions.create(
         model=model_name,
         temperature=0.2,
         messages=[
@@ -120,13 +120,13 @@ def generate_sop(
     logging.info(f"Instructions tokens used: {num_tokens_from_string(instructions, 'cl100k_base')}")
     logging.info(
         f"User input tokens used (Excluding resume): {num_tokens_from_string(user_given_string, 'cl100k_base')}")
-    sop_content = completion.choices[0]["message"]["content"]
+    sop_content = completion["choices"][0]["message"]["content"]
     logging.info(completion)
     return sop_content
 
 
 def resume_summarize_with_gpt(resume_text):
-    completion = openai.ChatCompletion.create(
+    completion = client.chat.completions.create(
         model="gpt-3.5-turbo-16k",
         temperature=0.3,
         max_tokens=300,
@@ -147,5 +147,5 @@ def resume_summarize_with_gpt(resume_text):
     logging.info(f"Number of total input tokens used: {num_tokens_from_string(resume_text, 'cl100k_base')}")
     logging.info(
         f"Number of total output tokens used: {num_tokens_from_string(completion.choices[0]['message']['content'], 'cl100k_base')}")
-    resume = completion.choices[0]["message"]["content"]
+    resume = completion['choices'][0]["message"]["content"]
     return resume
