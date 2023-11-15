@@ -3,6 +3,7 @@ from PIL import Image
 
 im = Image.open('icon.png')
 st.set_page_config(page_title="SOP Generator", page_icon=im)
+import streamlit_analytics
 
 from open_ai_sop import generate_sop, resume_summarize_with_gpt
 # Check if the user is logged in
@@ -24,6 +25,7 @@ from datetime import datetime
 import pytz
 
 from streamlit_star_rating import st_star_rating
+streamlit_analytics.start_tracking(unsafe_password=st.secrets['tracking_password'])
 
 hide_streamlit_style = """
             <style>
@@ -493,3 +495,5 @@ def display_user_info_html(user_id):
 # Example usage
 if st.session_state.user_logged_in:
     display_user_info_html(st.session_state.user_id)
+
+streamlit_analytics.stop_tracking()

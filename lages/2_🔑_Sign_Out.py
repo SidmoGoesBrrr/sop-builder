@@ -7,6 +7,7 @@ from PIL import Image
 
 im = Image.open('icon.png')
 st.header("Sign Out")
+st.write("You are about to sign out of your account.")
 
 
 def nav_page(page_name, timeout_secs=3):
@@ -41,6 +42,7 @@ if st.button('Sign Out'):
     st.success("Logged out Successfully.")
     time.sleep(2)
     os.rename(r'pages/2_🔑_Sign_Out.py', r'lages/2_🔑_Sign_Out.py')
+    os.rename(r'lages/1_🚀_Sign_Up.py', r'pages/1_🚀_Sign_Up.py')
     os.rename(r'lages/2_🔑_Sign_In.py', r'pages/2_🔑_Sign_In.py')
     st.session_state.disabled = True
     st.session_state['button'] = False

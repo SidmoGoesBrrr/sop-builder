@@ -163,6 +163,8 @@ if not st.session_state.login_button:
                         data={"last_logged_in": datetime.now(ist).strftime("%A,%d %B %Y - %H:%M:%S")})
             os.rename(r'pages/2_🔑_Sign_In.py', r'lages/2_🔑_Sign_In.py')
             os.rename(r'lages/2_🔑_Sign_Out.py', r'pages/2_🔑_Sign_Out.py')
+            os.rename(r'pages/1_🚀_Sign_Up.py', r'lages/1_🚀_Sign_Up.py')
+
             nav_page("")
 
         else:

@@ -15,6 +15,11 @@ im = Image.open('icon.png')
 # Function to display the payment page
 def display_payment_page():
     # Razorpay payment link
+    st.title("Payment Page")
+    st.write("You can buy extra credits here")
+    st.write("Everytime you change inputs, you will need 99 credits to generate a new SOP")
+    st.write("To regenerate with the same input, you will need only 9 credits")
+    st.write("You can buy 99 credits for INR 99.00")
     payment_link = "https://rzp.io/l/aasopbuilder"
     if 'waiting_for_payment' not in st.session_state:
         st.session_state.waiting_for_payment = False
