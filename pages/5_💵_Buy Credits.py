@@ -93,9 +93,9 @@ def display_payment_page():
                             user_data['SOP_CREDITS'] += 99*no_of_sop
                             database.update_user(user_data['username'], user_data)
                             if no_of_sop==1:
-                                st.success(f"🎉 Congratulations! You have successfully purchased {99*no_of_sop} SOP credits. You can now create {no_of_sop} SOP draft. 🎉")
+                                st.success(f"🎉 Congratulations! You have successfully purchased {str(99*no_of_sop)} SOP credits. You can now create {str(no_of_sop)} SOP draft. 🎉")
                             elif no_of_sop>1:
-                                st.success(f"🎉 Congratulations! You have successfully purchased {99*no_of_sop} SOP credits. You can now create {no_of_sop} SOP drafts. 🎉")
+                                st.success(f"🎉 Congratulations! You have successfully purchased {str(99*no_of_sop)} SOP credits. You can now create {str(no_of_sop)} SOP drafts. 🎉")
                             st.balloons()
                             st.info("🔥 You can also view your SOP draft by clicking on the 'Drafts' button on the sidebar. 🔥")
                             break
