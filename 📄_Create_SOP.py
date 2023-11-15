@@ -25,7 +25,7 @@ from datetime import datetime
 import pytz
 
 from streamlit_star_rating import st_star_rating
-streamlit_analytics.start_tracking(unsafe_password=st.secrets['tracking_password'])
+streamlit_analytics.start_tracking(st.secrets['tracking_password'])
 
 hide_streamlit_style = """
             <style>
