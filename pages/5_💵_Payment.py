@@ -35,7 +35,7 @@ def display_payment_page():
                                     index_col=1)
             logging.info(sheet_url)
             logging.info(sheet_url.index)
-            sop_db_ph_no=database.get_user_data_by_id(st.session_state.user_id).get("phone_number", 0)
+            sop_db_ph_no="91"+database.get_user_data_by_id(st.session_state.user_id).get("phone_number", 0)
             razorpay_created_at=sheet_url.loc[sop_db_ph_no, 'Created At']
             created_at_datetime = datetime.fromtimestamp(razorpay_created_at, tz=pytz.UTC)
 
