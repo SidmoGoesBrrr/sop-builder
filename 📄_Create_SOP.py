@@ -1,5 +1,6 @@
 import streamlit as st
 from PIL import Image
+
 im = Image.open('icon.png')
 st.set_page_config(page_title="SOP Generator", page_icon=im)
 
@@ -345,6 +346,7 @@ else:
     with col2:
         if state.section_index == len(text_areas) - 1:
             import docx
+
             doc_download = docx.Document()
             doc_download.add_paragraph(st.session_state.generated_sop)
             doc_download.save("sop.docx")
@@ -393,11 +395,14 @@ else:
                             resume_text=st.session_state.summary)
                         st.session_state.generated_sop = generated_sop
                         regen_status.update(label="SOP Regenerated", state="complete", expanded=False)
+
                         st.session_state.rating_given = 0
                         st.rerun()
                         display_sop(generated_sop)
                 else:
                     st.error("Invalid Word Limit. Your value must be greater than 700 and less than 1100")
+            else:
+                st.error("You don't have enough credits to generate SOP. Please buy more credits from the sidebar.")
 
     with col5:
         if state.section_index == len(text_areas) - 1:
@@ -408,7 +413,8 @@ else:
                 st.rerun()
 
         elif state.section_index == len(text_areas) - 2:
-            if st.button("Generate SOP✅", disabled=st.session_state.section_index == len(text_areas) - 1):
+            if st.button("Generate SOP✅", disabled=st.session_state.section_index == len(text_areas) - 1) and \
+                    database.get_user_data_by_id(st.session_state.user_id).get("SOP_CREDITS", 0) >= 99:
                 if 500 <= st.session_state.word_limit <= 1100:
                     with st.status("Generating Sop...", expanded=True) as sop_status:
                         save_to_database(current_section_key, text)
@@ -433,6 +439,8 @@ else:
                             resume_text=st.session_state.summary,  # Adjust word limit accordingly
                             **fetched_data)
                         st.write("SOP Generated Successfully")
+                        database.update_user_data_by_id(st.session_state.user_id,
+                                                        {"SOP_CREDITS": database.get_user_data_by_id(st.session_state.user_id).get("SOP_CREDITS", 0) - 99})
                         st.session_state.generated_sop = generated_sop
                         time.sleep(0.2)
                         sop_status.update(label="SOP Generated", state="complete", expanded=False)
@@ -440,6 +448,8 @@ else:
                         display_sop(st.session_state.generated_sop)
                 else:
                     st.error("Invalid Word Limit. Your value must be greater than 700 and less than 1100")
+            else:
+                st.error("You don't have enough credits to generate SOP. Please buy more credits from the sidebar.")
 
         else:
             if st.button("Next➡️"):
@@ -455,27 +465,31 @@ else:
                 else:
                     error_msg(current_section['question'])
 
-def display_user_info_html(user_name, user_credits):
-    # Define the HTML template
+
+def display_user_info_html(user_id):
+    user_name = database.get_user_data_by_id(user_id).get("username", "User")
+    user_credits = database.get_user_data_by_id(user_id).get("SOP_CREDITS", 0)
     html = f"""
     <style>
     .user-info {{
         position: fixed;
         bottom: 10px;
-        align-items: center;
-        padding: 10px;
+        left: 90%;
+        align-items: right;
+        text-align: right;
         border-radius: 5px;
         box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
     }}
     </style>
     <div class="user-info">
-    <p><strong>User:</strong> {user_name}</p>
+    <!-- <p><strong>User:</strong> {user_name}</p> -->
     <p><strong>Credits:</strong> {user_credits}</p>
     </div>"""
-    
 
     # Display the HTML
     st.markdown(html, unsafe_allow_html=True)
 
+
 # Example usage
-display_user_info_html("John Doe", 100)
+if st.session_state.user_logged_in:
+    display_user_info_html(st.session_state.user_id)
